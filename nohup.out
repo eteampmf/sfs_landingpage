@@ -1,0 +1,33 @@
+ INFO  Accepting connections at http://localhost:3000
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 GET /
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 Returned 200 in 19 ms
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 GET /assets/index-DmXL5SlT.js
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 GET /assets/index-B1wWd6XY.css
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 Returned 200 in 7 ms
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 Returned 200 in 9 ms
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 GET /assets/logo_cropped_transparent-Cdd5jMCx-Cdd5jMCx.png
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 GET /assets/whatsapp_icon-DlvpWZxi-DlvpWZxi.png
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 Returned 200 in 3 ms
+ HTTP  9/9/2025 4:59:30 AM 10.198.195.1 Returned 200 in 3 ms
+ HTTP  9/9/2025 4:59:31 AM 10.198.195.1 GET /favicon.ico
+ HTTP  9/9/2025 4:59:31 AM 10.198.195.1 Returned 200 in 2 ms
+ INFO  Accepting connections at http://localhost:3000
+
+ INFO  Gracefully shutting down. Please wait...
+ INFO  Accepting connections at http://localhost:3000
+ INFO  Accepting connections at http://localhost:3000
+ INFO  Accepting connections at http://localhost:3001
+ INFO  Accepting connections at http://localhost:3000
+ INFO  Accepting connections at http://localhost:41433
+ INFO  Accepting connections at http://localhost:34037
+
+
+
+ INFO  Gracefully shutting down. Please wait...
+ INFO  Gracefully shutting down. Please wait...
+
+ INFO  Gracefully shutting down. Please wait...
+ INFO  Gracefully shutting down. Please wait...
+ INFO  Accepting connections at http://localhost:3000
+
+ INFO  Gracefully shutting down. Please wait...

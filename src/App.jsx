@@ -1,15 +1,26 @@
-import { useState } from 'react'
+import React, { useState, Suspense, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
 import { Building2, Briefcase, Heart, Home, Sparkles, ShoppingBag, Lightbulb, Palette, Shield, Leaf, Mail, Phone, Facebook, Linkedin } from 'lucide-react'
-import emailjs from '@emailjs/browser'
-import logoImage from '/src/assets/logo_cropped_transparent-Cdd5jMCx.png'
+import logoImage from '/src/assets/Minimalwhitebackground.png'
 import whatsappIcon from '/src/assets/whatsapp_icon-DlvpWZxi.png'
 import '/src/App.css'
 
+// Lazy load Carousel
+const Carousel = Suspense
+  ? React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.Carousel })))
+  : null
+const CarouselContent = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselContent })))
+const CarouselItem = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselItem })))
+const CarouselNext = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselNext })))
+const CarouselPrevious = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselPrevious })))
+
 function App() {
+  // SEO hidden text
+  const seoRef = useRef()
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,16 +29,31 @@ function App() {
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState('')
+  const [activeSlide, setActiveSlide] = useState(0)
+  const [carouselVisible, setCarouselVisible] = useState(false)
 
-  // Configuration EmailJS (à remplacer par vos vraies clés)
+  const slides = [
+    {
+      video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F61578692011171%2Fvideos%2F1395095338269544%2F&show_text=false&autoplay=true&mute=true",
+      text: "Voyez comment nos vitres intelligentes PDLC transforment les espaces, offrant intimité et transparence sur demande.",
+    },
+    {
+      video: "",
+      text: "Découvrez la simplicité d’installation du film commutable PDLC pour transformer votre vitre en vitre intelligente.",
+    },
+  ]
+
   const EMAILJS_SERVICE_ID = 'service_bmmspcm'
   const EMAILJS_TEMPLATE_ID = 'template_zlf1l2h'
   const EMAILJS_PUBLIC_KEY = 'sCLtjmpeph40aEzni'
 
+  // Lazy load EmailJS on submit
   const handleContactSubmit = async (e) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmitStatus('')
+
+    const emailjs = await import('@emailjs/browser')
 
     try {
       const result = await emailjs.send(
@@ -42,8 +68,6 @@ function App() {
         EMAILJS_PUBLIC_KEY
       )
 
-      console.log('EmailJS result:', result)
-      
       setSubmitStatus('Message envoyé avec succès!')
       setFormData({ name: '', email: '', phone: '', message: '' })
     } catch (error) {
@@ -54,43 +78,19 @@ function App() {
   }
 
   const handleWhatsAppDemo = () => { 
-    const phoneNumber = "212770330219" // Numéro sans espaces ni caractères spéciaux
+    const phoneNumber = "212770330219"
     const message = "Bonjour ! Je suis intéressé(e) par une démonstration de vos vitres intelligentes. Pouvez-vous me contacter ?"
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, '_blank')
   }
 
   const sectors = [
-    {
-      icon: Building2,
-      title: "Hôtellerie & Resorts",
-      description: "Offrir des expériences haut de gamme et personnalisées"
-    },
-    {
-      icon: Briefcase,
-      title: "Bureaux & Espaces de travail",
-      description: "Optimiser confidentialité et lumière naturelle"
-    },
-    {
-      icon: Heart,
-      title: "Santé & Cliniques",
-      description: "Garantir confort, hygiène et intimité aux patients"
-    },
-    {
-      icon: Home,
-      title: "Résidentiel & Villas",
-      description: "Apporter luxe, confort et modernité au quotidien"
-    },
-    {
-      icon: Sparkles,
-      title: "Beauté & Bien-être",
-      description: "Sublimer spas, salons et instituts avec des espaces élégants et apaisants"
-    },
-    {
-      icon: ShoppingBag,
-      title: "Commerce & Retail",
-      description: "Créer des espaces commerciaux modernes et attractifs pour une expérience client unique"
-    }
+    { icon: Building2, title: "Hôtellerie & Resorts", description: "Offrir des expériences haut de gamme et personnalisées" },
+    { icon: Briefcase, title: "Bureaux & Espaces de travail", description: "Optimiser confidentialité et lumière naturelle" },
+    { icon: Heart, title: "Santé & Cliniques", description: "Garantir confort, hygiène et intimité aux patients" },
+    { icon: Home, title: "Résidentiel & Villas", description: "Apporter luxe, confort et modernité au quotidien" },
+    { icon: Sparkles, title: "Beauté & Bien-être", description: "Sublimer spas, salons et instituts avec des espaces élégants et apaisants" },
+    { icon: ShoppingBag, title: "Commerce & Retail", description: "Créer des espaces commerciaux modernes et attractifs pour une expérience client unique" }
   ]
 
   const values = [
@@ -100,24 +100,46 @@ function App() {
     { icon: Leaf, title: "Durabilité" }
   ]
 
+  // Lazy load carousel when visible
+  const carouselRef = useRef()
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if(entry.isIntersecting) setCarouselVisible(true)
+    }, { threshold: 0.1 })
+    if(carouselRef.current) observer.observe(carouselRef.current)
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
+      {/* SEO hidden text */}
+      <div ref={seoRef} style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <h1>Vitres intelligentes au Maroc – Verre PDLC & Film Commutable</h1>
+        <h2>Films intelligents et Smart Glass pour bureaux, maisons, hôtels et commerces</h2>
+        <p>
+          Découvrez nos solutions de <strong>vitrage intelligent</strong> : PDLC(Polymer Dispersed Liquid Crystal) et films commutables
+          offrant confidentialité à la demande, design moderne et performance énergétique.
+        </p>
+      </div>
+
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <img src={logoImage} alt="Vitres Intelligentes Maroc" className="h-12 w-auto" />
-          </div>
+          <a href="#accueil" className="flex items-center space-x-2">
+            <img src={logoImage} alt="Vitres intelligentes Maroc – verre PDLC et film commutable" className="h-12 w-auto" />
+          </a>
           <nav className="hidden md:flex space-x-8">
             <a href="#accueil" className="text-gray-700 hover:text-teal-600 transition-colors">Accueil</a>
-            <a href="#apropos" className="text-gray-700 hover:text-teal-600 transition-colors">À propos</a>
+            <a href="#techno" className="text-gray-700 hover:text-teal-600 transition-colors">Notre technologie</a>
+            <a href="#nos-secteurs" className="text-gray-700 hover:text-teal-600 transition-colors">Nos secteurs</a>
+            <a href="#nos-valeurs" className="text-gray-700 hover:text-teal-600 transition-colors">Nos valeurs</a>
             <a href="#contact" className="text-gray-700 hover:text-teal-600 transition-colors">Contact</a>
           </nav>
           <Button 
             onClick={handleWhatsAppDemo}
             className="bg-teal-600 hover:bg-teal-700 text-white"
           >
-            Demander une démo
+            <img src={whatsappIcon} alt="Contact WhatsApp Vitres Intelligentes Maroc" className="mr-2 h-5 w-5" />
+            Demander un devis
           </Button>
         </div>
       </header>
@@ -129,13 +151,10 @@ function App() {
             Vos vitres, <span className="text-teal-600">Réinventées</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Des solutions innovantes pour transformer vos vitres : 
-            Transparence ou Intimité en un clic.
+            Des films intelligents pour transformer vos vitres : Transparence ou Intimité en un clic.
           </p>
           <p className="text-lg text-gray-700 mb-12 max-w-4xl mx-auto">
-            Vitres Intelligentes Maroc apporte l'innovation au cœur de vos espaces. Grâce à nos films de verre intelligents, 
-            profitez d'une transparence ou d'une intimité à la demande, sans travaux. Design, confort et simplicité réunis 
-            pour transformer chaque environnement.
+            Vitres Intelligentes Maroc apporte l'innovation au cœur de vos espaces. Grâce à nos films de verre intelligents, profitez d'une transparence ou d'une intimité à la demande, sans travaux. Design, confort et simplicité réunis pour transformer chaque environnement.
           </p>
           <Button 
             size="lg" 
@@ -143,27 +162,62 @@ function App() {
             className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg"
           >
             <img src={whatsappIcon} alt="WhatsApp" className="mr-2 h-5 w-5" />
-            Demander une démo
+            Demander un devis
           </Button>
         </div>
       </section>
 
       {/* Video Section */}
-      <div className="relative aspect-[9/16] max-w-md mx-auto rounded-lg overflow-hidden">
-        <iframe
-          src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F61578692011171%2Fvideos%2F1395095338269544%2F&show_text=false&autoplay=true&mute=true"
-          className="absolute top-0 left-0 w-full h-full"
-          style={{ border: "none", overflow: "hidden" }}
-          scrolling="no"
-          frameBorder="0"
-          allowFullScreen={true}
-          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-        ></iframe>
-      </div>
+      <section id="techno" className="py-20 bg-gray-50" ref={carouselRef}>
+        <div className="max-w-md mx-auto relative">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
+            Notre <span className="text-teal-600">Technologie</span>
+          </h2>
 
+          {carouselVisible && (
+            <Suspense fallback={<div>Chargement de la technologie...</div>}>
+              <Carousel>
+                <CarouselContent>
+                  {slides.map((slide, idx) => (
+                    <CarouselItem key={idx}>
+                    <div className="relative aspect-[9/16] rounded-lg overflow-hidden">
+                      {slide.video ? (
+                        <iframe
+                          src={slide.video}
+                          title={`Vidéo ${idx + 1} – Vitres intelligentes PDLC`}
+                          className="absolute top-0 left-0 w-full h-full"
+                          style={{ border: 'none', overflow: 'hidden' }}
+                          frameBorder="0"
+                          allowFullScreen
+                          loading="lazy"
+                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                        />
+                      ) : (
+                        <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-700">
+                          {slide.text}
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4 text-center text-lg font-medium">
+                        {slide.text}
+                      </div>
+                    </div>
+                  </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/50 text-white p-2 rounded-full">◀</CarouselPrevious>
+                <CarouselNext className="absolute top-1/2 -translate-y-1/2 right-2 bg-black/50 text-white p-2 rounded-full">▶</CarouselNext>
+              </Carousel>
+            </Suspense>
+          )}
+
+          <p className="mt-4 text-sm text-gray-600 italic text-center">
+            👉 Glissez ou utilisez les flèches pour voir l’installation
+          </p>
+        </div>
+      </section>
 
       {/* Sectors Section */}
-      <section className="py-20">
+      <section id="nos-secteurs" className="py-20">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
             Nos <span className="text-teal-600">Secteurs</span>
@@ -183,7 +237,7 @@ function App() {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 bg-gray-50">
+      <section id="nos-valeurs" className="py-20 bg-gray-50">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
             Nos <span className="text-teal-600">Valeurs</span>
@@ -297,4 +351,3 @@ function App() {
 }
 
 export default App
-

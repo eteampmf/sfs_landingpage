@@ -329,7 +329,7 @@ function App() {
                     <Facebook className="h-6 w-6" />
                   </a>
                   <a 
-                    href="https://linkedin.com/company/YOUR_LINKEDIN_PAGE" 
+                    href="https://www.linkedin.com/company/vitres-intelligentes-maroc" 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="bg-gray-800 p-3 rounded-full hover:bg-gray-700 transition-colors"

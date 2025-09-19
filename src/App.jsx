@@ -7,6 +7,8 @@ import { Building2, Briefcase, Heart, Home, Sparkles, ShoppingBag, Lightbulb, Pa
 import logoImage from '/src/assets/Minimalwhitebackground.png'
 import whatsappIcon from '/src/assets/whatsapp_icon-DlvpWZxi.png'
 import '/src/App.css'
+import transparentImage from './assets/transparent_window.png'
+import opaqueImage from './assets/opaque_window.png'
 
 // Lazy load Carousel
 const Carousel = Suspense
@@ -20,6 +22,11 @@ const CarouselPrevious = React.lazy(() => import('@/components/ui/carousel').the
 function App() {
   // SEO hidden text
   const seoRef = useRef()
+
+  const [isTransparent, setIsTransparent] = useState(true)
+  const toggleMode = () => {
+    setIsTransparent(!isTransparent)
+  }
   
   const [formData, setFormData] = useState({
     name: '',
@@ -156,7 +163,69 @@ function App() {
           <p className="text-lg text-gray-700 mb-12 max-w-4xl mx-auto">
             Vitres Intelligentes Maroc apporte l'innovation au cœur de vos espaces. Grâce à nos films de verre intelligents, profitez d'une transparence ou d'une intimité à la demande, sans travaux. Design, confort et simplicité réunis pour transformer chaque environnement.
           </p>
-          <Button 
+
+          
+          {/* Interactive Switch Demo */}
+          <div className="mb-12">
+            <div className="max-w-2xl mx-auto">
+              {/* Image Display */}
+              <div className="relative mb-8 rounded-2xl overflow-hidden shadow-2xl">
+                <img 
+                  src={isTransparent ? transparentImage : opaqueImage}
+                  alt={isTransparent ? "Mode transparent - Vue claire à travers la vitre" : "Mode opaque - Intimité préservée"}
+                  className="w-full h-auto transition-opacity duration-500"
+                />
+              </div>
+
+              {/* Creative Switch Button */}
+              <div className="flex flex-col items-center space-y-4">
+                <div className="text-lg font-medium text-gray-700 mb-2">
+                  Mode actuel: <span className="font-bold text-teal-600">
+                    {isTransparent ? 'Transparent' : 'Opaque'}
+                  </span>
+                </div>
+                
+                {/* Light Switch Style Button */}
+                <button
+                  onClick={toggleMode}
+                  className="relative w-32 h-16 bg-gray-200 rounded-full p-2 transition-all duration-300 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-200 shadow-lg"
+                  aria-label={`Basculer vers le mode ${isTransparent ? 'opaque' : 'transparent'}`}
+                >
+                  {/* Switch Track */}
+                  <div className={`absolute inset-2 rounded-full transition-all duration-300 ${
+                    isTransparent ? 'bg-teal-500' : 'bg-gray-400'
+                  }`}>
+                    {/* Switch Handle */}
+                    <div className={`absolute top-1 w-10 h-10 bg-white rounded-full shadow-md transition-all duration-300 transform ${
+                      isTransparent ? 'translate-x-14' : 'translate-x-1'
+                    }`}>
+                      {/* Switch Icon */}
+                      <div className="flex items-center justify-center h-full">
+                        {isTransparent ? (
+                          <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                            <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd"/>
+                          </svg>
+                        ) : (
+                          <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd"/>
+                            <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
+                          </svg>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </button>
+
+                <p className="text-sm text-gray-500 max-w-md text-center">
+                  Cliquez sur l'interrupteur pour voir la transformation instantanée de nos vitres intelligentes
+                </p>
+              </div>
+            </div>
+          </div>
+
+
+{/*         <Button 
             size="lg" 
             onClick={handleWhatsAppDemo}
             className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg"
@@ -164,6 +233,7 @@ function App() {
             <img src={whatsappIcon} alt="WhatsApp" className="mr-2 h-5 w-5" />
             Demander un devis
           </Button>
+*/}
         </div>
       </section>
 

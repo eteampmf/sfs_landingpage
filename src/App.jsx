@@ -152,7 +152,7 @@ function App() {
       </header>
 
       {/* Hero Section */}
-      <section id="accueil" className="bg-gradient-to-br from-gray-50 to-white py-20">
+      <section id="accueil" className="bg-gradient-to-br from-gray-50 to-white py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6">
             Vos vitres, <span className="text-teal-600">Réinventées</span>
@@ -164,42 +164,33 @@ function App() {
             Vitres Intelligentes Maroc apporte l'innovation au cœur de vos espaces. Grâce à nos films de verre intelligents, profitez d'une transparence ou d'une intimité à la demande, sans travaux. Design, confort et simplicité réunis pour transformer chaque environnement.
           </p>
 
-          
           {/* Interactive Switch Demo */}
-          <div className="mb-12">
+          <div className="mb-8">
             <div className="max-w-2xl mx-auto">
               {/* Image Display */}
-              <div className="relative mb-8 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="relative mb-6 rounded-2xl overflow-hidden shadow-2xl aspect-[16/9]">
                 <img 
                   src={isTransparent ? transparentImage : opaqueImage}
-                  alt={isTransparent ? "Mode transparent - Vue claire à travers la vitre" : "Mode opaque - Intimité préservée"}
-                  className="w-full h-auto transition-opacity duration-500"
+                  alt={isTransparent ? "Mode transparent" : "Mode opaque"}
+                  className="w-full h-full object-cover transition-opacity duration-500"
                 />
-              </div>
 
-              {/* Creative Switch Button */}
-              <div className="flex flex-col items-center space-y-4">
-                <div className="text-lg font-medium text-gray-700 mb-2">
-                  Mode actuel: <span className="font-bold text-teal-600">
-                    {isTransparent ? 'Transparent' : 'Opaque'}
-                  </span>
-                </div>
-                
-                {/* Light Switch Style Button */}
+
+                {/* Switch centré en bas de l’image */}
                 <button
                   onClick={toggleMode}
-                  className="relative w-32 h-16 bg-gray-200 rounded-full p-2 transition-all duration-300 hover:bg-gray-300 focus:outline-none focus:ring-4 focus:ring-teal-200 shadow-lg"
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 
+                            w-32 h-16 bg-gray-200 rounded-full p-2 
+                            transition-all duration-300 hover:bg-gray-300 
+                            focus:outline-none focus:ring-4 focus:ring-teal-200 shadow-lg"
                   aria-label={`Basculer vers le mode ${isTransparent ? 'opaque' : 'transparent'}`}
                 >
-                  {/* Switch Track */}
                   <div className={`absolute inset-2 rounded-full transition-all duration-300 ${
                     isTransparent ? 'bg-teal-500' : 'bg-gray-400'
                   }`}>
-                    {/* Switch Handle */}
                     <div className={`absolute top-1 w-10 h-10 bg-white rounded-full shadow-md transition-all duration-300 transform ${
                       isTransparent ? 'translate-x-14' : 'translate-x-1'
                     }`}>
-                      {/* Switch Icon */}
                       <div className="flex items-center justify-center h-full">
                         {isTransparent ? (
                           <svg className="w-5 h-5 text-teal-500" fill="currentColor" viewBox="0 0 20 20">
@@ -216,24 +207,20 @@ function App() {
                     </div>
                   </div>
                 </button>
-
-                <p className="text-sm text-gray-500 max-w-md text-center">
-                  Cliquez sur l'interrupteur pour voir la transformation instantanée de nos vitres intelligentes
-                </p>
               </div>
+
+              {/* Texte explicatif */}
+              <div className="text-lg font-medium text-gray-700 mb-4">
+                Mode actuel:{" "}
+                <span className="font-bold text-teal-600 inline-block min-w-[110px] text-left">
+                  {isTransparent ? "Transparent" : "Opaque"}
+                </span>
+              </div>
+              <p className="text-sm text-gray-500 max-w-md text-center mx-auto">
+                👉 Cliquez sur l'interrupteur pour voir la transformation instantanée de nos vitres intelligentes
+              </p>
             </div>
           </div>
-
-
-{/*         <Button 
-            size="lg" 
-            onClick={handleWhatsAppDemo}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 text-lg"
-          >
-            <img src={whatsappIcon} alt="WhatsApp" className="mr-2 h-5 w-5" />
-            Demander un devis
-          </Button>
-*/}
         </div>
       </section>
 
@@ -280,7 +267,7 @@ function App() {
             </Suspense>
           )}
 
-          <p className="mt-4 text-sm text-gray-600 italic text-center">
+          <p className="text-sm text-gray-500 max-w-md text-center">
             👉 Glissez ou utilisez les flèches pour voir l’installation
           </p>
         </div>

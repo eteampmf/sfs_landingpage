@@ -238,28 +238,28 @@ function App() {
                 <CarouselContent>
                   {slides.map((slide, idx) => (
                     <CarouselItem key={idx}>
-                    <div className="relative aspect-[9/16] rounded-lg overflow-hidden">
-                      {slide.video ? (
-                        <iframe
-                          src={slide.video}
-                          title={`Vidéo ${idx + 1} – Vitres intelligentes PDLC`}
-                          className="absolute top-0 left-0 w-full h-full"
-                          style={{ border: 'none', overflow: 'hidden' }}
-                          frameBorder="0"
-                          allowFullScreen
-                          loading="lazy"
-                          allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                        />
-                      ) : (
-                        <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-700">
+                      <div className="relative aspect-[9/16] rounded-lg overflow-hidden">
+                        {slide.video ? (
+                          <iframe
+                            src={slide.video}
+                            title={`Vidéo ${idx + 1} – Vitres intelligentes PDLC`}
+                            className="absolute top-0 left-0 w-full h-full"
+                            style={{ border: 'none', overflow: 'hidden' }}
+                            frameBorder="0"
+                            allowFullScreen
+                            loading="lazy"
+                            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                          />
+                        ) : (
+                          <div className="bg-gray-200 w-full h-full flex items-center justify-center text-gray-700">
+                            {slide.text}
+                          </div>
+                        )}
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4 text-center text-lg font-medium">
                           {slide.text}
                         </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white p-4 text-center text-lg font-medium">
-                        {slide.text}
                       </div>
-                    </div>
-                  </CarouselItem>
+                    </CarouselItem>
                   ))}
                 </CarouselContent>
                 <CarouselPrevious className="absolute top-1/2 -translate-y-1/2 left-2 bg-black/50 text-white p-2 rounded-full">◀</CarouselPrevious>

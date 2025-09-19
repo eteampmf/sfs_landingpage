@@ -40,14 +40,15 @@ function App() {
   const [carouselVisible, setCarouselVisible] = useState(false)
 
   const slides = [
-    {
-      video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F61578692011171%2Fvideos%2F1395095338269544%2F&show_text=false&autoplay=true&mute=true",
-      text: "Voyez comment nos vitres intelligentes PDLC transforment les espaces, offrant intimité et transparence sur demande.",
-    },
+
     {
       video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F801888595706424%2Fvideos%2F801888595706424%2F&show_text=false&autoplay=true&mute=true",
       text: "Découvrez la simplicité d’installation du film commutable PDLC pour transformer votre vitre en vitre intelligente.",
     },
+    {
+      video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F61578692011171%2Fvideos%2F1395095338269544%2F&show_text=false&autoplay=true&mute=true",
+      text: "Voyez comment nos vitres intelligentes PDLC transforment les espaces, offrant intimité et transparence sur demande.",
+    }
   ]
 
   const EMAILJS_SERVICE_ID = 'service_bmmspcm'
@@ -268,7 +269,7 @@ function App() {
           )}
 
           <p className="text-sm text-gray-500 max-w-md text-center">
-            👉 Glissez ou utilisez les flèches pour voir l’installation
+            👉 Glissez ou utilisez les flèches pour voir plus d'exemples
           </p>
         </div>
       </section>

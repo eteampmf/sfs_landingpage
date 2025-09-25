@@ -43,11 +43,11 @@ function App() {
 
     {
       video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F801888595706424%2Fvideos%2F801888595706424%2F&show_text=false&autoplay=true&mute=true",
-      text: "Découvrez la simplicité d’installation du film commutable PDLC pour transformer votre vitre en vitre intelligente.",
+      text: "Installation facile, résultat spectaculaire : vos vitres deviennent intelligentes en quelques heures.",
     },
     {
       video: "https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2F61578692011171%2Fvideos%2F1395095338269544%2F&show_text=false&autoplay=true&mute=true",
-      text: "Voyez comment nos vitres intelligentes PDLC transforment les espaces, offrant intimité et transparence sur demande.",
+      text: "De la transparence à l’intimité, créez l’ambiance parfaite à tout moment. Vos espaces suivent vos envies.",
     }
   ]
 
@@ -93,19 +93,19 @@ function App() {
   }
 
   const sectors = [
-    { icon: Building2, title: "Hôtellerie & Resorts", description: "Offrir des expériences haut de gamme et personnalisées" },
-    { icon: Briefcase, title: "Bureaux & Espaces de travail", description: "Optimiser confidentialité et lumière naturelle" },
-    { icon: Heart, title: "Santé & Cliniques", description: "Garantir confort, hygiène et intimité aux patients" },
-    { icon: Home, title: "Résidentiel & Villas", description: "Apporter luxe, confort et modernité au quotidien" },
-    { icon: Sparkles, title: "Beauté & Bien-être", description: "Sublimer spas, salons et instituts avec des espaces élégants et apaisants" },
-    { icon: ShoppingBag, title: "Commerce & Retail", description: "Créer des espaces commerciaux modernes et attractifs pour une expérience client unique" }
+    { icon: Building2, title: "Hôtellerie & Resorts", description: "Surprenez vos clients avec des suites lumineuses le jour, intimes et chaleureuses la nuit." },
+    { icon: Briefcase, title: "Bureaux & Espaces de travail", description: "Offrez à vos équipes la confidentialité quand elles en ont besoin, et l’ouverture quand elles la souhaitent." },
+    { icon: Heart, title: "Santé & Cliniques", description: "Créez un environnement rassurant, hygiénique et respectueux de l’intimité des patients." },
+    { icon: Home, title: "Résidentiel & Villas", description: "Faites entrer la modernité chez vous : plus de rideaux, plus de compromis, seulement confort et élégance." },
+    { icon: Sparkles, title: "Beauté & Bien-être", description: "Donnez à vos clients l’expérience d’un cocon apaisant, entre lumière douce et discrétion totale." },
+    { icon: ShoppingBag, title: "Commerce & Retail", description: "Attirez le regard avec des vitrines vivantes qui s’adaptent à chaque moment de la journée." }
   ]
 
   const values = [
-    { icon: Lightbulb, title: "Innovation" },
-    { icon: Palette, title: "Design moderne" },
-    { icon: Shield, title: "Fiabilité" },
-    { icon: Leaf, title: "Durabilité" }
+    { icon: Lightbulb, title: "Innovation qui simplifie la vie" },
+    { icon: Palette, title: "Design qui sublime vos espaces" },
+    { icon: Shield, title: "Fiabilité pour une tranquillité d’esprit" },
+    { icon: Leaf, title: "Durabilité pour l’avenir et la planète" }
   ]
 
   // Lazy load carousel when visible
@@ -147,7 +147,7 @@ function App() {
             className="bg-teal-600 hover:bg-teal-700 text-white"
           >
             <img src={whatsappIcon} alt="Contact WhatsApp Vitres Intelligentes Maroc" className="mr-2 h-5 w-5" />
-            Demander un devis
+            Obtenez votre démonstration gratuite
           </Button>
         </div>
       </header>
@@ -159,10 +159,10 @@ function App() {
             Vos vitres, <span className="text-teal-600">Réinventées</span>
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-            Des films intelligents pour transformer vos vitres : Transparence ou Intimité en un clic.
+            Passez de la transparence à l’intimité en un instant. Offrez à vos espaces élégance, confort et innovation.
           </p>
           <p className="text-lg text-gray-700 mb-12 max-w-4xl mx-auto">
-            Vitres Intelligentes Maroc apporte l'innovation au cœur de vos espaces. Grâce à nos films de verre intelligents, profitez d'une transparence ou d'une intimité à la demande, sans travaux. Design, confort et simplicité réunis pour transformer chaque environnement.
+            Nos films de verre intelligents redéfinissent vos espaces. Sans travaux lourds, vous choisissez : ouverture totale sur la lumière ou bulle d’intimité. Un geste simple, pour un quotidien plus moderne.
           </p>
 
           {/* Interactive Switch Demo */}
@@ -319,7 +319,7 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
             <div>
-              <h3 className="text-2xl font-bold mb-8">Contactez-nous</h3>
+              <h3 className="text-2xl font-bold mb-8">Prêts à transformer vos vitres ? Parlons-en !</h3>
               <form onSubmit={handleContactSubmit} className="space-y-6">
                 <Input
                   placeholder="Nom"
@@ -355,7 +355,7 @@ function App() {
                   disabled={isSubmitting}
                   className="w-full bg-teal-600 hover:bg-teal-700"
                 >
-                  {isSubmitting ? 'Envoi en cours...' : 'Envoyer le message'}
+                  {isSubmitting ? 'Envoi en cours...' : 'Je veux découvrir la différence'}
                 </Button>
                 {submitStatus && (
                   <p className={`text-sm ${submitStatus.includes('succès') ? 'text-green-400' : 'text-red-400'}`}>
@@ -367,7 +367,7 @@ function App() {
 
             {/* Contact Info */}
             <div>
-              <h3 className="text-2xl font-bold mb-8">Informations</h3>
+              <h3 className="text-2xl font-bold mb-8">Nous sommes à votre écoute</h3>
               <div className="space-y-6">
                 <div className="flex items-center space-x-4">
                   <Mail className="h-6 w-6 text-teal-400" />

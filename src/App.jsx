@@ -147,7 +147,7 @@ function App() {
             className="bg-teal-600 hover:bg-teal-700 text-white"
           >
             <img src={whatsappIcon} alt="Contact WhatsApp Vitres Intelligentes Maroc" className="mr-2 h-5 w-5" />
-            Obtenez votre démonstration gratuite
+            Démo gratuite
           </Button>
         </div>
       </header>

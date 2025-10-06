@@ -4,15 +4,14 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-   theme: {
+  theme: {
     extend: {
       colors: {
-        primary: "#52ABCC",     // bleu clair - CTA, liens
-        secondary: "#495A6E",   // bleu-gris - headers, encadrés
-        accent: "#1D252C",      // foncé - textes, footer
-        neutral: "#48596D",     // gris bleuté - textes secondaires
-        background: "#FFFFFF",  // blanc - fonds principaux
-        lightbg: "#F6F8FA",     // gris très clair - alternance sections
+        frame: "#232C36",          // dark frame
+        "glass-clear": "#89C0D9",  // light transparent
+        "glass-frosted": "#556478",// frosted grey-blue
+        "neutral-light": "#F9FAFB",// light neutral background
+        "accent-teal": "#2DD4BF",  // accent color
       }
     },
   },

@@ -3,7 +3,10 @@ import { Button } from '@/components/ui/button.jsx'
 import { Card, CardContent } from '@/components/ui/card.jsx'
 import { Input } from '@/components/ui/input.jsx'
 import { Textarea } from '@/components/ui/textarea.jsx'
-import { Building2, Briefcase, Heart, Home, Sparkles, ShoppingBag, Lightbulb, Palette, Shield, Leaf, Mail, Phone, Facebook, Linkedin } from 'lucide-react'
+import { Building2, Briefcase, Heart, Home,
+   Sparkles, ShoppingBag, Lightbulb, Palette,
+    Shield, Leaf, Mail, Phone, Facebook, Linkedin ,
+      ChevronDown, ChevronUp, Sun, Layers, Zap, Info, Award} from 'lucide-react'
 import logoImage from '/src/assets/Minimalwhitebackground.png'
 import whatsappIcon from '/src/assets/whatsapp_icon-DlvpWZxi.png'
 import '/src/App.css'
@@ -18,6 +21,26 @@ const CarouselContent = React.lazy(() => import('@/components/ui/carousel').then
 const CarouselItem = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselItem })))
 const CarouselNext = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselNext })))
 const CarouselPrevious = React.lazy(() => import('@/components/ui/carousel').then(mod => ({ default: mod.CarouselPrevious })))
+ 
+{/* Composant FAQItem */}
+function FAQItem({ icon, question, answer }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+      <button 
+        className="w-full px-6 py-4 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition-colors focus:outline-none"
+        onClick={() => setOpen(!open)}
+      >
+        <div className="flex items-center text-left">
+          {icon}
+          <span className="text-gray-900 font-medium">{question}</span>
+        </div>
+        {open ? <ChevronUp className="h-5 w-5 text-teal-600" /> : <ChevronDown className="h-5 w-5 text-teal-600" />}
+      </button>
+      {open && <div className="px-6 py-4 bg-white border-t border-gray-200">{answer}</div>}
+    </div>
+  )
+}
 
 function App() {
   // SEO hidden text
@@ -85,6 +108,8 @@ function App() {
     }
   }
 
+
+
   const handleWhatsAppDemo = () => { 
     const phoneNumber = "212770330219"
     const message = "Bonjour ! Je suis intéressé(e) par une démonstration de vos vitres intelligentes. Pouvez-vous me contacter ?"
@@ -131,6 +156,7 @@ function App() {
 
       {/* Header */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
+
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <a href="#accueil" className="flex items-center space-x-2">
             <img src={logoImage} alt="Vitres intelligentes Maroc – verre PDLC et film commutable" className="h-12 w-auto" />
@@ -312,6 +338,97 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* FAQ Section Accordéon */}
+      <section id="faq" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <h2 className="text-4xl font-bold text-center text-gray-900 mb-16">
+            Questions <span className="text-teal-600">Fréquentes</span>
+          </h2>
+
+          <div className="max-w-4xl mx-auto space-y-4">
+
+            {[
+              {
+                icon: <Zap className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Qu’est‑ce que le film intelligent PDLC et comment fonctionne-t‑il ?",
+                answer: (
+                  <p className="text-gray-700">
+                    Le film PDLC (Polymer Dispersed Liquid Crystal) est un film mince que nous appliquons <strong>sur une vitre existante</strong> pour la rendre “intelligente”. <br/>
+                    Le film contient des cristaux liquides dans une matrice polymère qui s'organisent différemment selon le branchement électrique :<br/>
+                      - <strong>Sans courant électrique :</strong> les cristaux sont désordonnés → le film paraît <strong><span className="text-teal-600">opaque</span></strong> et protège votre intimité.<br/>
+                      - <strong>Avec courant électrique :</strong> les molécules s’alignent → la vitre redevient <strong><span className="text-teal-600">transparente</span></strong> et laisse passer la lumière.<br/>
+                    Cette technologie transforme vos vitres existantes en surfaces modulables, modernes et sécurisées.
+                  </p>
+                )
+              },
+              {
+                icon: <Sun className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Quels bénéfices concrets pour vos espaces ?",
+                answer: (
+                  <p className="text-gray-700">
+                    - Intimité instantanée selon vos envies<br/>
+                    - Optimisation de la lumière naturelle et économies d’énergie grâce à l’isolation thermique<br/>
+                    - Protection anti-UV et sécurité (le film retient les éclats en cas de bris)<br/>
+                    - Polyvalence d’usage : projection HD, tableau blanc interactif, cloison dynamique<br/>
+                    - Esthétique moderne et valorisation de vos espaces professionnels ou résidentiels
+                  </p>
+                )
+              },
+              {
+                icon: <Layers className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Où installer le film, et quelle gamme choisir selon vos objectifs ?",
+                answer: (
+                  <p className="text-gray-700">
+                    Nos films s’adaptent à vos usages et ambitions :<br/>
+                    <strong>Essential</strong> : bureaux, salles de réunion, musées — intimité, transparence, projection.<br/>
+                    <strong>Superior</strong> : espaces multi-usages entre vision claire, projection et séparation visuelle.<br/>
+                    <strong>Crystal</strong> : lieux prestigieux demandant transparence optimale et rendu haut de gamme.<br/>
+                    <strong>Ultra</strong> : villas de luxe, hôtels 5 étoiles, laboratoires ou zones hautement sécurisées.
+                  </p>
+                )
+              },
+              {
+                icon: <Shield className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Quelle est la différence entre vos “Vitres Intelligentes” et un verre à technologie intégrée ?",
+                answer: (
+                  <p className="text-gray-700">
+                    - Nos <strong>Vitres Intelligentes</strong> désignent exclusivement le <strong>film PDLC appliqué sur vos vitrages existants</strong>, pour les rendre modulables et “intelligentes” instantanément.<br/>
+                    - Un <strong>verre à technologie intégrée</strong> (ou “smart glass”) intègre la couche PDLC dès sa fabrication, nécessitant de remplacer le vitrage complet et impliquant un coût plus élevé.<br/>
+                    - Avec nos films, vous transformez vos vitrages actuels en espaces dynamiques, modernes et sécurisés, <strong>sans changer vos fenêtres</strong>.
+                  </p>
+                )
+              },
+              {
+                icon: <Info className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Y a‑t-il des points de vigilance à connaître ?",
+                answer: (
+                  <p className="text-gray-700">
+                    - Installation professionnelle obligatoire<br/>
+                    - Fonctionnement sur alimentation électrique<br/>
+                    - Conçu pour l’intérieur uniquement<br/>
+                  </p>
+                )
+              },
+              {
+                icon: <Award className="h-5 w-5 text-teal-600 mr-2" />,
+                question: "Quelle durabilité et sécurité pour votre investissement ?",
+                answer: (
+                  <p className="text-gray-700">
+                    Nos films résistent jusqu’à 105 °C, sont anti-rayures et améliorent l’isolation acoustique d’environ 20 %.<br/> 
+                    En cas de casse, ils retiennent les éclats et garantissent un usage sûr et durable.
+                  </p>
+                )
+              }
+              ].map((faq, idx) => (
+                <FAQItem key={idx} icon={faq.icon} question={faq.question} answer={faq.answer} />
+              ))}
+
+          </div>
+        </div>
+      </section>
+
+
 
       {/* Footer */}
       <footer id="contact" className="bg-gray-900 text-white py-16">

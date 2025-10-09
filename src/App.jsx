@@ -367,12 +367,14 @@ function App() {
                 question: "Quels bénéfices concrets pour vos espaces ?",
                 answer: (
                   <p className="text-gray-700">
-                    - Intimité instantanée selon vos envies<br/>
-                    - Optimisation de la lumière naturelle et économies d’énergie grâce à l’isolation thermique<br/>
-                    - Protection anti-UV et sécurité (le film retient les éclats en cas de bris)<br/>
-                    - Polyvalence d’usage : projection HD, tableau blanc interactif, cloison dynamique<br/>
-                    - Esthétique moderne et valorisation de vos espaces professionnels ou résidentiels
-                  </p>
+                    <strong>Intimité instantanée</strong> : d’un simple geste, passez de transparent à opaque selon vos besoins.<br/>
+                    <strong>Filtration des UV</strong> : protegez vos intérieurs et vos occupants des rayons ultraviolets.<br/>
+                    <strong>Entretien minimal</strong> : facile à nettoyer, sans mécanisme fragile ni store à dépoussiérer.<br/>
+                    <strong>Économies d’énergie</strong> : Réduisez les coûts de climatisation et de chauffage grâce à ses propriétés d’isolation thermique.<br/>
+                    <strong>Lumière naturelle maximale</strong> : même en mode opaque, la luminosité reste douce et diffuse.<br/>
+                    <strong>Sécurité renforcée</strong> : en cas de bris, le film retient les éclats de verre, évitant toute projection dangereuse.<br/>
+                    <strong>Polyvalence</strong> : sert de cloison dynamique, d’écran de projection HD ou même de tableau blanc interactif dans les salles de réunion.<br/>
+               </p>
                 )
               },
               {
@@ -395,7 +397,7 @@ function App() {
                   <p className="text-gray-700">
                     - Nos <strong>Vitres Intelligentes</strong> désignent exclusivement le <strong>film PDLC appliqué sur vos vitrages existants</strong>, pour les rendre modulables et “intelligentes” instantanément.<br/>
                     - Un <strong>verre à technologie intégrée</strong> (ou “smart glass”) intègre la couche PDLC dès sa fabrication, nécessitant de remplacer le vitrage complet et impliquant un coût plus élevé.<br/>
-                    - Avec nos films, vous transformez vos vitrages actuels en espaces dynamiques, modernes et sécurisés, <strong>sans changer vos fenêtres</strong>.
+                    Avec nos films, vous transformez vos vitrages actuels en espaces dynamiques, modernes et sécurisés, <strong>sans changer vos fenêtres</strong>.
                   </p>
                 )
               },
@@ -404,9 +406,11 @@ function App() {
                 question: "Y a‑t-il des points de vigilance à connaître ?",
                 answer: (
                   <p className="text-gray-700">
-                    - Installation professionnelle obligatoire<br/>
-                    - Fonctionnement sur alimentation électrique<br/>
-                    - Conçu pour l’intérieur uniquement<br/>
+                    <strong>Coût</strong> : plus onéreux qu’un vitrage classique, mais le film PDLC reste <em>beaucoup plus économique</em> qu’un verre intelligent intégré.<br/>
+                    <strong>Installation professionnelle</strong> : la pose et le raccordement électrique nécessitent un installateur qualifié.<br/>
+                    <strong>Utilisation intérieure</strong> : conçu pour les espaces intérieurs (bureaux, villas, hôtels, etc.).<br/>
+                    <strong>Alimentation électrique</strong> : un faible courant alternatif est nécessaire pour passer en mode transparent.<br/>
+                    <strong>Technologie encore émergente</strong> : assurez-vous de choisir un <strong>fournisseur fiable</strong> pour garantir la qualité et la durabilité du produit.<br/>
                   </p>
                 )
               },

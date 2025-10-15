@@ -54,9 +54,11 @@ function App() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    countryCode: '',
     phone: '',
-    message: ''
+    surface: ''
   })
+
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState('')
   const [activeSlide, setActiveSlide] = useState(0)
@@ -93,8 +95,8 @@ function App() {
         {
           from_name: formData.name,
           from_email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
+          phone: `${formData.countryCode} ${formData.phone}`,
+          surface: formData.surface,
         },
         EMAILJS_PUBLIC_KEY
       )
@@ -457,20 +459,44 @@ function App() {
                   required
                   className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
                 />
-                <Input
-                  type="tel"
-                  placeholder="Téléphone"
-                  value={formData.phone}
-                  onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-                />
-                <Textarea
-                  placeholder="Message"
-                  value={formData.message}
-                  onChange={(e) => setFormData({...formData, message: e.target.value})}
+                {/* Téléphone avec indicatif */}
+                <div className="flex space-x-2">
+                  <select
+                    value={formData.countryCode}
+                    onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                    className="bg-gray-800 border border-gray-700 text-white rounded-md px-3 py-2"
+                  >
+                    <option value="+212">🇲🇦 +212</option>
+                    <option value="+33">🇫🇷 +33</option>
+                    <option value="+34">🇪🇸 +34</option>
+                    <option value="+44">🇬🇧 +44</option>
+                    <option value="+49">🇩🇪 +49</option>
+                    <option value="+1">🇺🇸 +1 (US)</option>
+                    <option value="+1">🇨🇦 +1 (CA)</option>
+                  </select>
+                  <Input
+                    type="tel"
+                    placeholder="Téléphone"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="flex-1 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                    required
+                  />
+                </div>
+
+                {/* Surface à équiper */}
+                <select
+                  value={formData.surface}
+                  onChange={(e) => setFormData({ ...formData, surface: e.target.value })}
                   required
-                  className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-32"
-                />
+                  className="w-full bg-gray-800 border-gray-700 text-white rounded-md px-3 py-2"
+                >
+                  <option value="">Surface à équiper</option>
+                  <option value="moins de 5 m2">Moins de 5 m²</option>
+                  <option value="entre 5 et 40 m2">Entre 5 et 40 m²</option>
+                  <option value="plus de 40 m2">Plus de 40 m²</option>
+                </select>
+
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}

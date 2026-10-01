@@ -1,0 +1,11 @@
+Déposez ici les photos générées (format .jpg), avec EXACTEMENT ces noms :
+
+demo-opaque.jpg                      demo-transparent.jpg                  (16:9, ~2400x1350)
+secteur-hotellerie-opaque.jpg        secteur-hotellerie-transparent.jpg    (4:3, ~1600x1200)
+secteur-bureaux-opaque.jpg           secteur-bureaux-transparent.jpg
+secteur-sante-opaque.jpg             secteur-sante-transparent.jpg
+secteur-residentiel-opaque.jpg       secteur-residentiel-transparent.jpg
+secteur-beaute-opaque.jpg            secteur-beaute-transparent.jpg
+secteur-commerce-opaque.jpg          secteur-commerce-transparent.jpg
+
+Conseil : gardez chaque image sous ~400 Ko (compression JPG qualité 75-80) pour un site rapide.

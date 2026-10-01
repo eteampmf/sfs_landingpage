@@ -547,7 +547,7 @@ function App() {
           </div>
           
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-            <p>&copy; 2025 Vitres Intelligente Maroc. Tous droits réservés.</p>
+            <p>&copy; 2025 Vitres Intelligente Maroc, Noorium Group SARL. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

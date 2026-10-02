@@ -73,7 +73,7 @@ export const T = {
         ['Hôtellerie & Resorts', 'Surprenez vos clients avec des suites lumineuses le jour, intimes et chaleureuses la nuit.'],
         ['Bureaux & Espaces de travail', 'Offrez à vos équipes la confidentialité quand elles en ont besoin, et l’ouverture quand elles la souhaitent.'],
         ['Santé & Cliniques', 'Créez un environnement rassurant, hygiénique et respectueux de l’intimité des patients.'],
-        ['Résidentiel & Villas', 'Faites entrer la modernité chez vous : plus de rideaux, plus de compromis, seulement confort et élégance.'],
+        ['Résidentiel & Villas', 'Faites entrer la modernité chez vous : vos rideaux restent un élément de décor, la vitre intelligente vous offre l’intimité en un geste. Le meilleur des deux.'],
         ['Beauté & Bien-être', 'Donnez à vos clients l’expérience d’un cocon apaisant, entre lumière douce et discrétion totale.'],
         ['Commerce & Retail', 'Attirez le regard avec des vitrines vivantes qui s’adaptent à chaque moment de la journée.'],
       ],
@@ -126,7 +126,7 @@ export const T = {
           <p>
             <strong>Intimité instantanée</strong> : d’un simple geste, passez de transparent à opaque selon vos besoins.<br/>
             <strong>Filtration des UV</strong> : protegez vos intérieurs et vos occupants des rayons ultraviolets.<br/>
-            <strong>Entretien minimal</strong> : facile à nettoyer, sans mécanisme fragile ni store à dépoussiérer.<br/>
+            <strong>Entretien minimal</strong> : facile à nettoyer, sans mécanisme fragile.<br/>
             <strong>Économies d’énergie</strong> : Réduisez les coûts de climatisation et de chauffage grâce à ses propriétés d’isolation thermique.<br/>
             <strong>Lumière naturelle maximale</strong> : même en mode opaque, la luminosité reste douce et diffuse.<br/>
             <strong>Sécurité renforcée</strong> : en cas de bris, le film retient les éclats de verre, évitant toute projection dangereuse.<br/>
@@ -209,11 +209,11 @@ export const T = {
     switchLangAria: 'Voir le site en français',
     nav: ['التقنية', 'القطاعات', 'مراجعنا', 'إنجازاتنا', 'الأسئلة الشائعة', 'اتصل بنا'],
     devis: 'عرض سعر مجاني',
-    call: 'عيّط لينا',
+    call: 'اتصلوا بنا',
     callAria: (p) => `اتصل بالرقم ${p}`,
     whatsapp: 'واتساب',
     whatsappAria: 'عرض سعر عبر واتساب',
-    whatsappMsg: 'السلام عليكم! بغيت عرض سعر مجاني للزجاج الذكي ديالكم. واش ممكن تتواصلو معايا؟',
+    whatsappMsg: 'السلام عليكم، أرغب في الحصول على عرض سعر مجاني للزجاج الذكي. هل يمكنكم التواصل معي؟',
     menu: 'القائمة',
     logoAlt: 'Vitres Intelligentes Maroc – زجاج PDLC وفيلم ذكي',
 
@@ -262,8 +262,8 @@ export const T = {
         ['الفنادق والمنتجعات', 'فاجئوا زبناءكم بأجنحة مضيئة نهاراً، حميمة ودافئة ليلاً.'],
         ['المكاتب وفضاءات العمل', 'امنحوا فرقكم الخصوصية عند الحاجة، والانفتاح متى أرادوا.'],
         ['الصحة والمصحات', 'أنشئوا بيئة مطمئنة وصحية تحترم خصوصية المرضى.'],
-        ['السكن والفيلات', 'أدخلوا الحداثة إلى بيوتكم: لا ستائر بعد اليوم، ولا تنازلات، فقط الراحة والأناقة.'],
-        ['التجميل والعافية', 'قدّموا لزبنائكم تجربة ملاذ هادئ، بين ضوء ناعم وتكتّم تام.'],
+        ['السكن والفيلات', 'أدخلوا الحداثة إلى بيوتكم: تبقى ستائركم عنصراً من عناصر الديكور، ويمنحكم الزجاج الذكي الخصوصية بلمسة واحدة. الأفضل من الاثنين معاً.'],
+        ['التجميل والعناية', 'قدّموا لزبنائكم تجربة ملاذ هادئ، بين ضوء ناعم وتكتّم تام.'],
         ['التجارة والمحلات', 'اجذبوا الأنظار بواجهات حيّة تتكيّف مع كل لحظة من اليوم.'],
       ],
     },
@@ -299,7 +299,7 @@ export const T = {
     faq: {
       eyebrow: 'كل ما تريدون معرفته',
       title: <>الأسئلة {tc('الشائعة')}</>,
-      other: 'عندك سؤال آخر؟',
+      other: 'لديكم سؤال آخر؟',
       otherSub: 'فريقنا يجيبكم مباشرة.',
       items: [
         ['ما هو الفيلم الذكي PDLC وكيف يعمل؟', (
@@ -315,7 +315,7 @@ export const T = {
           <p>
             <strong>خصوصية فورية</strong>: بحركة بسيطة، انتقلوا من الشفاف إلى المعتم حسب حاجتكم.<br/>
             <strong>تصفية الأشعة فوق البنفسجية</strong>: احموا فضاءاتكم وساكنيها من الأشعة فوق البنفسجية.<br/>
-            <strong>صيانة بسيطة</strong>: سهل التنظيف، بدون آليات هشّة ولا ستائر تجمع الغبار.<br/>
+            <strong>صيانة بسيطة</strong>: سهل التنظيف، بدون آليات هشّة.<br/>
             <strong>توفير في الطاقة</strong>: قلّلوا تكاليف التكييف والتدفئة بفضل خصائصه في العزل الحراري.<br/>
             <strong>أقصى قدر من الضوء الطبيعي</strong>: حتى في الوضع المعتم، يبقى الضوء ناعماً ومنتشراً.<br/>
             <strong>أمان معزّز</strong>: عند الكسر، يمسك الفيلم شظايا الزجاج ويمنع تطايرها.<br/>
@@ -347,12 +347,6 @@ export const T = {
             <strong>تقنية حديثة نسبياً</strong>: احرصوا على اختيار <strong>مزوّد موثوق</strong> لضمان جودة المنتج وديمومته.<br/>
           </p>
         )],
-        ['واش ممكن نركّب الفيلم الذكي على الجاج اللي عندي؟', (
-          <p>
-            إيه، ممكن! الفيلم الذكي كيتلصق مباشرة على <strong>الجاج اللي عندكم</strong>، بلا ما تبدّلو الشراجم وبلا أشغال كبيرة.<br/>
-            كنجيو عندكم، كناخدو القياسات، وكنركّبو الفيلم مع الربط الكهربائي في ساعات قليلة، فالدار البيضاء، الرباط، سلا، مراكش ولا أي مدينة أخرى فالمغرب.
-          </p>
-        )],
         ['ما مدى متانة وأمان استثماركم؟', (
           <p>
             تتحمّل أفلامنا حرارة تصل إلى 105 درجة، وهي مضادة للخدوش وتحسّن العزل الصوتي بحوالي 20 %.<br/>
@@ -364,7 +358,7 @@ export const T = {
 
     contact: {
       eyebrow: 'اتصل بنا',
-      title: <>مستعدّون لتحويل زجاجكم؟ <span className="text-teal-300">يلّاه نهضرو!</span></>,
+      title: <>مستعدّون لتحويل زجاجكم؟ <span className="text-teal-300">لنتحدث!</span></>,
       listen: 'نحن رهن إشارتكم',
       fastest: 'الأسرع للحصول على عرض سعر مجاني:',
       formTitle: 'أو اتركوا لنا معلوماتكم',
@@ -375,7 +369,7 @@ export const T = {
       codeAria: 'رمز الدولة',
       surface: 'المساحة المراد تجهيزها',
       surfaces: ['أقل من 5 م²', 'من 5 إلى 40 م²', 'أكثر من 40 م²'],
-      submit: 'بغيت عرض السعر المجاني',
+      submit: 'احصلوا على عرض السعر المجاني',
       sending: 'جارٍ الإرسال...',
       ok: 'تم إرسال رسالتكم بنجاح!',
       err: 'حدث خطأ أثناء الإرسال. يرجى المحاولة مرة أخرى.',
@@ -389,7 +383,7 @@ export const T = {
       label: 'الزجاج',
       on: 'شفاف',
       off: 'معتم',
-      hint: 'كليكي هنا!',
+      hint: 'اضغطوا هنا!',
       toOn: 'اجعل الزجاج شفافاً',
       toOff: 'اجعل الزجاج معتماً',
     },

@@ -65,6 +65,22 @@ const openWhatsApp = () => {
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank')
 }
 
+/* Boutons de contact unifiés : même style que la télécommande */
+function ContactButtons({ size = 'md', className = '' }) {
+  return (
+    <div className={`cta-pair cta-pair--${size} ${className}`}>
+      <a href={PHONE_TEL} className="dock-btn dock-btn--call" aria-label={`Appeler le ${PHONE_DISPLAY}`}>
+        <Phone className="h-5 w-5" />
+        <span>Appeler</span>
+      </a>
+      <button type="button" onClick={openWhatsApp} className="dock-btn dock-btn--wa" aria-label="Devis sur WhatsApp">
+        <img src={whatsappIcon} alt="" className="h-5 w-5 invert" />
+        <span>WhatsApp</span>
+      </button>
+    </div>
+  )
+}
+
 /* Calque photo : la boîte garde le ratio de la paire et couvre la zone,
    ainsi l'image opaque et l'image transparente se superposent parfaitement. */
 function PhotoLayer({ src, alt, ratio, className = '', loading }) {
@@ -113,6 +129,7 @@ function WallSwitch({ on, onToggle, size = 'md', label, hint, hintSide = 'top' }
 ================================================================== */
 function SmartWindow({ on, windowRef, onSwitch, hint }) {
   const [hover, setHover] = useState(false)
+  const hideTimer = useRef()
   const [touched, setTouched] = useState(false)
 
   const setPoint = (e) => {
@@ -130,12 +147,12 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
       ref={windowRef}
       className="smart-window relative w-full overflow-hidden rounded-[1.75rem] md:rounded-[2.5rem] bg-frame select-none"
       style={{ '--r': radius }}
-      onPointerEnter={(e) => { setPoint(e); setHover(true); setTouched(true) }}
-      onPointerMove={setPoint}
-      onPointerDown={(e) => { setPoint(e); setHover(true); setTouched(true) }}
-      onPointerLeave={() => setHover(false)}
-      onPointerUp={(e) => { if (e.pointerType !== 'mouse') setTimeout(() => setHover(false), 900) }}
-      onPointerCancel={() => setTimeout(() => setHover(false), 900)}
+      onPointerEnter={(e) => { if (e.pointerType === 'mouse') { setPoint(e); setHover(true); setTouched(true) } }}
+      onPointerMove={(e) => { if (e.pointerType === 'mouse' || hover) setPoint(e) }}
+      onPointerDown={(e) => { if (e.target.closest('button')) return; clearTimeout(hideTimer.current); setPoint(e); setHover(true); setTouched(true) }}
+      onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHover(false) }}
+      onPointerUp={(e) => { if (e.pointerType !== 'mouse') { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) } }}
+      onPointerCancel={() => { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) }}
     >
       <PhotoLayer src={DEMO_IMAGES.opaque} ratio={DEMO_RATIO} alt="Vitre intelligente en mode opaque – film PDLC" />
       <PhotoLayer src={DEMO_IMAGES.clear} ratio={DEMO_RATIO} alt="Vitre intelligente en mode transparent – film PDLC" className="clear-layer" />
@@ -159,13 +176,6 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
         Mode actuel : <span className="font-semibold">{on ? 'Transparent' : 'Opaque'}</span>
       </div>
 
-      {/* Interrupteur */}
-      <div className="absolute bottom-4 right-4 md:bottom-8 md:right-8 flex items-center gap-3">
-        <span className="hidden sm:block rounded-full bg-white/85 px-4 py-2 text-sm font-semibold text-ink backdrop-blur shadow">
-          {on ? 'Éteindre' : 'Allumer'} →
-        </span>
-        <WallSwitch on={on} onToggle={(e) => onSwitch(e.currentTarget)} size="lg" hint={hint} />
-      </div>
     </div>
   )
 }
@@ -225,10 +235,6 @@ function CrystalDemo({ on, onToggle, hint }) {
           <p className={`transition-opacity ${on ? 'opacity-100' : 'opacity-40'}`}>
             <strong className="text-teal-300">Avec courant électrique :</strong> <span className="text-slate-300">les molécules s’alignent → la vitre redevient transparente.</span>
           </p>
-        </div>
-        <div className="flex items-center gap-3 shrink-0">
-          <span className="text-sm text-slate-400">Essayez :</span>
-          <WallSwitch on={on} onToggle={onToggle} size="md" hint={hint} hintSide="left" />
         </div>
       </div>
     </div>
@@ -436,13 +442,12 @@ function App() {
             >
               <Instagram className="h-5 w-5" />
             </a>
-            <button
-              onClick={openWhatsApp}
-              className="inline-flex items-center gap-2 rounded-full bg-ink hover:bg-frame text-white text-sm font-semibold pl-3 pr-4 py-2.5 transition-colors"
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 rounded-full bg-ink hover:bg-frame text-white text-sm font-semibold px-5 py-2.5 transition-colors"
             >
-              <img src={whatsappIcon} alt="Contact WhatsApp Vitres Intelligentes Maroc" className="h-5 w-5 invert" />
               Devis gratuit
-            </button>
+            </a>
             <button
               className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full text-ink hover:bg-ink/5"
               onClick={() => setMenuOpen(!menuOpen)}
@@ -487,34 +492,19 @@ function App() {
               <p className="text-slate-500 mb-8">
                 Nos films de verre intelligents redéfinissent vos espaces. Sans travaux lourds, vous choisissez : ouverture totale sur la lumière ou bulle d’intimité. Un geste simple, pour un quotidien plus moderne.
               </p>
-              <div className="flex flex-wrap gap-3">
-                <button onClick={openWhatsApp} className="btn-primary">
-                  <img src={whatsappIcon} alt="" className="h-5 w-5 invert" />
-                  Devis gratuit sur WhatsApp
-                </button>
-                <a href="#contact" className="btn-ghost">
-                  Demander un devis <ArrowUpRight className="h-5 w-5" />
-                </a>
-              </div>
-              <a href={PHONE_TEL} className="mt-6 inline-flex items-center gap-3 group">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-teal-50 text-teal-700 group-hover:bg-teal-600 group-hover:text-white transition-colors"><Phone className="h-4 w-4" /></span>
-                <span className="text-sm text-slate-500">Devis gratuit par téléphone<br /><span className="text-lg font-bold text-ink">{PHONE_DISPLAY}</span></span>
-              </a>
-              <a href="#clients" className="mt-6 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500 hover:text-ink transition-colors">
-                <span className="font-medium">Ils nous font confiance :</span>
-                {CLIENTS.map((c, i) => (
-                  <span key={c.name} className="font-semibold text-ink">{c.name}{i < CLIENTS.length - 1 && <span className="ml-3 text-slate-300">·</span>}</span>
-                ))}
+              <p className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">Devis gratuit, sans engagement</p>
+              <ContactButtons size="lg" />
+              <a href="#contact" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-ink transition-colors">
+                ou par formulaire <ArrowRight className="h-4 w-4" />
               </a>
             </div>
           </div>
 
           <div className="aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
-            <SmartWindow on={isTransparent} windowRef={windowRef} onSwitch={toggleMode} hint={!tried ? 'Cliquez ici' : null} />
+            <SmartWindow on={isTransparent} windowRef={windowRef} onSwitch={toggleMode} />
           </div>
           <p className="mt-5 text-center text-sm text-slate-500">
-            👉 Appuyez sur l’interrupteur pour voir la transformation instantanée de nos vitres intelligentes — <span className="text-ink font-medium">tout le site réagit.</span>
-          </p>
+            👉 Utilisez l’interrupteur en bas de l’écran pour voir la transformation instantanée de nos vitres intelligentes — <span className="text-ink font-medium">tout le site réagit.</span></p>
         </div>
       </section>
 
@@ -543,7 +533,7 @@ function App() {
           </div>
 
           <div data-reveal>
-            <CrystalDemo on={isTransparent} onToggle={() => toggleMode()} hint={!tried ? 'Essayez' : null} />
+            <CrystalDemo on={isTransparent} onToggle={() => toggleMode()} />
           </div>
 
         </div>
@@ -729,11 +719,8 @@ function App() {
             <h2 className="section-title">Questions <span className="text-teal-600">Fréquentes</span></h2>
             <div className="mt-10 rounded-3xl bg-ink p-7 text-white">
               <p className="text-lg font-semibold">Une autre question ?</p>
-              <p className="mt-1 text-slate-400">Notre équipe vous répond directement sur WhatsApp.</p>
-              <button onClick={openWhatsApp} className="mt-6 inline-flex items-center gap-2 rounded-full bg-teal-400 hover:bg-teal-300 px-5 py-3 font-semibold text-ink transition-colors">
-                <img src={whatsappIcon} alt="" className="h-5 w-5" /> Écrire sur WhatsApp
-              </button>
-              <a href={PHONE_TEL} className="mt-4 flex items-center gap-2 font-semibold text-white hover:text-teal-300"><Phone className="h-4 w-4 text-teal-300" /> {PHONE_DISPLAY}</a>
+              <p className="mt-1 text-slate-400">Notre équipe vous répond directement.</p>
+              <ContactButtons className="mt-6" />
             </div>
           </div>
 
@@ -831,9 +818,10 @@ function App() {
               <h3 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">Prêts à transformer vos vitres ? <span className="text-teal-300">Parlons-en !</span></h3>
               <div className="mt-12 space-y-4">
                 <h3 className="text-lg font-semibold text-slate-300">Nous sommes à votre écoute</h3>
+                <p className="text-slate-400">Le plus rapide pour votre devis gratuit :</p>
+                <ContactButtons size="lg" className="pb-4" />
                 {[
                   { href: 'mailto:contact@vitres-intelligentes.com', icon: Mail, label: 'contact@vitres-intelligentes.com' },
-                  { href: 'tel:+212770330219', icon: Phone, label: '+212 7 70 33 02 19' },
                   { href: INSTAGRAM_URL, icon: Instagram, label: `@${INSTAGRAM_HANDLE}`, external: true },
                 ].map((c) => (
                   <a key={c.label} href={c.href} {...(c.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})} className="group flex items-center gap-4">
@@ -848,8 +836,8 @@ function App() {
 
             {/* Formulaire */}
             <div className="rounded-[2rem] bg-white p-7 md:p-10 text-ink shadow-2xl" data-reveal>
-              <p className="text-2xl font-bold">Devis gratuit</p>
-              <p className="text-slate-500 mb-8">Réponse rapide, sans engagement.</p>
+              <p className="text-2xl font-bold">Ou laissez-nous vos coordonnées</p>
+              <p className="text-slate-500 mb-8">Nous vous rappelons pour votre devis gratuit, sans engagement.</p>
               <form onSubmit={handleContactSubmit} className="grid gap-4 sm:grid-cols-2">
                 <Input
                   placeholder="Nom"
@@ -922,7 +910,7 @@ function App() {
                   disabled={isSubmitting}
                   className="sm:col-span-2 mt-2 h-14 rounded-full bg-ink hover:bg-frame text-white font-semibold transition-colors disabled:opacity-60 inline-flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Envoi en cours...' : <>Je veux découvrir la différence <ArrowRight className="h-5 w-5" /></>}
+                  {isSubmitting ? 'Envoi en cours...' : <>Recevoir mon devis gratuit <ArrowRight className="h-5 w-5" /></>}
                 </button>
                 {submitStatus && (
                   <p className={`sm:col-span-2 text-sm ${submitStatus.includes('succès') ? 'text-green-600' : 'text-red-600'}`}>

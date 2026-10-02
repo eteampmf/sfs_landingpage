@@ -621,3 +621,14 @@ body { font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif; }
 }
 @media (prefers-reduced-motion: reduce) { .switch-hint, .switch-pulse { animation: none; } }
 
+/* ---------- Boutons Appeler / WhatsApp hors télécommande ---------- */
+.cta-pair { display: flex; flex-wrap: wrap; gap: 10px; }
+.cta-pair .dock-btn { height: 52px; padding: 0 22px; font-size: 15px; }
+.cta-pair--lg .dock-btn { height: 58px; padding: 0 28px; font-size: 16px; }
+.cta-pair .dock-btn { box-shadow: 0 10px 22px -12px rgba(15,27,42,.5); }
+@media (max-width: 640px) {
+  .cta-pair .dock-btn, .cta-pair--lg .dock-btn { flex: 1; padding: 0 12px; }
+}
+/* the photo frame: a quick tap must not be eaten by scrolling */
+.smart-window { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+@media (max-width: 767px) { .smart-window { --wipe: 120px; } }

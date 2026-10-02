@@ -8,6 +8,7 @@ import { Building2, Briefcase, Heart, Home,
 import logoImage from '/src/assets/logo-vitres-intelligentes.png'
 import whatsappIcon from '/src/assets/whatsapp_icon-DlvpWZxi.png'
 import '/src/App.css'
+import { LangContext, useT, useLang, T } from './i18n.jsx'
 
 /* Instagram */
 const INSTAGRAM_HANDLE = 'vitresintelligentes'
@@ -60,22 +61,23 @@ function Img({ src, fallback, ...props }) {
   )
 }
 
-const openWhatsApp = () => {
-  const message = "Bonjour ! Je souhaite un devis gratuit pour vos vitres intelligentes. Pouvez-vous me contacter ?"
+const openWhatsApp = (lang = 'fr') => {
+  const message = T[lang].whatsappMsg
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank')
 }
 
 /* Boutons de contact unifiés : même style que la télécommande */
 function ContactButtons({ size = 'md', className = '' }) {
+  const t = useT(); const lang = useLang()
   return (
     <div className={`cta-pair cta-pair--${size} ${className}`}>
-      <a href={PHONE_TEL} className="dock-btn dock-btn--call" aria-label={`Appeler le ${PHONE_DISPLAY}`}>
+      <a href={PHONE_TEL} className="dock-btn dock-btn--call" aria-label={t.callAria(PHONE_DISPLAY)}>
         <Phone className="h-5 w-5" />
-        <span>Appeler</span>
+        <span>{t.call}</span>
       </a>
-      <button type="button" onClick={openWhatsApp} className="dock-btn dock-btn--wa" aria-label="Devis sur WhatsApp">
+      <button type="button" onClick={() => openWhatsApp(lang)} className="dock-btn dock-btn--wa" aria-label={t.whatsappAria}>
         <img src={whatsappIcon} alt="" className="h-5 w-5 invert" />
-        <span>WhatsApp</span>
+        <span>{t.whatsapp}</span>
       </button>
     </div>
   )
@@ -98,12 +100,13 @@ function PhotoLayer({ src, alt, ratio, className = '', loading }) {
    Il pilote tout le site : OFF = vitres opaques, ON = transparentes.
 ================================================================== */
 function WallSwitch({ on, onToggle, size = 'md', label, hint, hintSide = 'top' }) {
+  const t = useT()
   return (
     <span className={`switch-wrap ${hint ? 'has-hint' : ''}`}>
       {hint && (
         <span className={`switch-hint switch-hint--${hintSide}`} aria-hidden="true">
           {hint}
-          <span className="switch-hint-arrow">{hintSide === 'left' ? '→' : '↓'}</span>
+          <span className="switch-hint-arrow">{hintSide === 'left' ? t.arrow : '↓'}</span>
         </span>
       )}
       {hint && <span className="switch-pulse" aria-hidden="true" />}
@@ -111,7 +114,7 @@ function WallSwitch({ on, onToggle, size = 'md', label, hint, hintSide = 'top' }
         type="button"
         role="switch"
         aria-checked={on}
-        aria-label={label || (on ? 'Rendre les vitres opaques' : 'Rendre les vitres transparentes')}
+        aria-label={label || (on ? t.dock.toOff : t.dock.toOn)}
         onClick={onToggle}
         className={`wall-switch wall-switch--${size}`}
       >
@@ -141,6 +144,7 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
   }
 
   const radius = on ? '150vmax' : hover ? 'var(--wipe)' : '0px'
+  const t = useT().window
 
   return (
     <div
@@ -154,8 +158,8 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
       onPointerUp={(e) => { if (e.pointerType !== 'mouse') { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) } }}
       onPointerCancel={() => { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) }}
     >
-      <PhotoLayer src={DEMO_IMAGES.opaque} ratio={DEMO_RATIO} alt="Vitre intelligente en mode opaque – film PDLC" />
-      <PhotoLayer src={DEMO_IMAGES.clear} ratio={DEMO_RATIO} alt="Vitre intelligente en mode transparent – film PDLC" className="clear-layer" />
+      <PhotoLayer src={DEMO_IMAGES.opaque} ratio={DEMO_RATIO} alt={t.altOff} />
+      <PhotoLayer src={DEMO_IMAGES.clear} ratio={DEMO_RATIO} alt={t.altOn} className="clear-layer" />
 
       {/* Indice d'interaction */}
       {!on && !touched && (
@@ -163,17 +167,17 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
           <div className="wipe-hint flex flex-col items-center gap-3 text-ink">
             <span className="hint-ring" />
             <span className="rounded-full bg-white/80 px-4 py-1.5 text-sm font-medium backdrop-blur">
-              <span className="hidden md:inline">Passez la souris sur la vitre</span>
-              <span className="md:hidden">Touchez la vitre</span>
+              <span className="hidden md:inline">{t.hintMouse}</span>
+              <span className="md:hidden">{t.hintTouch}</span>
             </span>
           </div>
         </div>
       )}
 
       {/* Statut */}
-      <div className="absolute left-4 top-4 md:left-6 md:top-6 flex items-center gap-2 rounded-full bg-ink/70 px-4 py-2 text-xs md:text-sm font-medium text-white backdrop-blur">
+      <div className="absolute start-4 top-4 md:start-6 md:top-6 flex items-center gap-2 rounded-full bg-ink/70 px-4 py-2 text-xs md:text-sm font-medium text-white backdrop-blur">
         <span className={`h-2 w-2 rounded-full transition-colors ${on ? 'bg-teal-300 shadow-[0_0_10px_#5eead4]' : 'bg-slate-400'}`} />
-        Mode actuel : <span className="font-semibold">{on ? 'Transparent' : 'Opaque'}</span>
+        {t.mode} <span className="font-semibold">{on ? t.on : t.off}</span>
       </div>
 
     </div>
@@ -192,6 +196,7 @@ function CrystalDemo({ on, onToggle, hint }) {
       delay: Math.round(rand() * 350 + (i % 12) * 25),
     }))
   }, [])
+  const t = useT().techno
 
   return (
     <div className="crystal-demo relative overflow-hidden rounded-[2rem] bg-ink p-6 md:p-10 text-white">
@@ -230,10 +235,10 @@ function CrystalDemo({ on, onToggle, hint }) {
       <div className="relative mt-8 flex flex-col md:flex-row md:items-center gap-6 justify-between border-t border-white/10 pt-6">
         <div className="grid sm:grid-cols-2 gap-4 text-sm md:text-base max-w-3xl">
           <p className={`transition-opacity ${on ? 'opacity-40' : 'opacity-100'}`}>
-            <strong className="text-white">Sans courant électrique :</strong> <span className="text-slate-300">les cristaux sont désordonnés → le film paraît opaque et protège votre intimité.</span>
+            <strong className="text-white">{t.offLabel}</strong> <span className="text-slate-300">{t.offText}</span>
           </p>
           <p className={`transition-opacity ${on ? 'opacity-100' : 'opacity-40'}`}>
-            <strong className="text-teal-300">Avec courant électrique :</strong> <span className="text-slate-300">les molécules s’alignent → la vitre redevient transparente.</span>
+            <strong className="text-teal-300">{t.onLabel}</strong> <span className="text-slate-300">{t.onText}</span>
           </p>
         </div>
       </div>
@@ -249,7 +254,7 @@ function FAQItem({ icon, question, answer, index }) {
   return (
     <div className={`border-b border-slate-200 transition-colors ${open ? 'bg-white' : ''}`}>
       <button
-        className="w-full py-6 px-2 md:px-4 flex justify-between items-center gap-6 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-xl"
+        className="w-full py-6 px-2 md:px-4 flex justify-between items-center gap-6 text-start focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-xl"
         onClick={() => setOpen(!open)}
         aria-expanded={open}
       >
@@ -263,7 +268,7 @@ function FAQItem({ icon, question, answer, index }) {
       </button>
       <div className={`grid transition-all duration-500 ${open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
         <div className="overflow-hidden">
-          <div className="px-2 md:px-4 sm:pl-[4.5rem] md:pl-[5rem] pb-7 leading-relaxed text-slate-600">{answer}</div>
+          <div className="px-2 md:px-4 sm:ps-[4.5rem] md:ps-[5rem] pb-7 leading-relaxed text-slate-600">{answer}</div>
         </div>
       </div>
     </div>
@@ -274,6 +279,22 @@ function FAQItem({ icon, question, answer, index }) {
    APP
 ================================================================== */
 function App() {
+  // Langue : FR (par défaut) / AR
+  // La langue vient de l'adresse : / = français, /ar/ = arabe (deux pages indexées par Google)
+  const [lang] = useState(() => (document.documentElement.lang || '').startsWith('ar') || window.location.pathname.startsWith('/ar') ? 'ar' : 'fr')
+  const t = T[lang]
+  useEffect(() => {
+    document.documentElement.lang = lang === 'ar' ? 'ar-MA' : 'fr-MA'
+    document.documentElement.dir = t.dir
+    if (lang === 'ar' && !document.getElementById('font-ar')) {
+      const l = document.createElement('link')
+      l.id = 'font-ar'; l.rel = 'stylesheet'
+      l.href = 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap'
+      document.head.appendChild(l)
+    }
+  }, [lang])
+  const toggleLang = () => { window.location.href = (lang === 'ar' ? '/' : '/ar/') + window.location.hash }
+
   // SEO hidden text
   const seoRef = useRef()
 
@@ -357,41 +378,30 @@ function App() {
         EMAILJS_PUBLIC_KEY
       )
 
-      setSubmitStatus('Message envoyé avec succès!')
+      setSubmitStatus('ok')
       setFormData({ name: '', email: '', countryCode: '+212', phone: '', surface: '' })
     } catch (error) {
-      setSubmitStatus('Erreur lors de l\'envoi. Veuillez réessayer.')
+      setSubmitStatus('err')
     } finally {
       setIsSubmitting(false)
     }
   }
 
-  const sectors = [
-    { icon: Building2, title: "Hôtellerie & Resorts", img: 'hotellerie', description: "Surprenez vos clients avec des suites lumineuses le jour, intimes et chaleureuses la nuit." },
-    { icon: Briefcase, title: "Bureaux & Espaces de travail", img: 'bureaux', description: "Offrez à vos équipes la confidentialité quand elles en ont besoin, et l’ouverture quand elles la souhaitent." },
-    { icon: Heart, title: "Santé & Cliniques", img: 'sante', description: "Créez un environnement rassurant, hygiénique et respectueux de l’intimité des patients." },
-    { icon: Home, title: "Résidentiel & Villas", img: 'residentiel', description: "Faites entrer la modernité chez vous : plus de rideaux, plus de compromis, seulement confort et élégance." },
-    { icon: Sparkles, title: "Beauté & Bien-être", img: 'beaute', description: "Donnez à vos clients l’expérience d’un cocon apaisant, entre lumière douce et discrétion totale." },
-    { icon: ShoppingBag, title: "Commerce & Retail", img: 'commerce', description: "Attirez le regard avec des vitrines vivantes qui s’adaptent à chaque moment de la journée." }
+  const sectorMeta = [
+    { icon: Building2, img: 'hotellerie' },
+    { icon: Briefcase, img: 'bureaux' },
+    { icon: Heart, img: 'sante' },
+    { icon: Home, img: 'residentiel' },
+    { icon: Sparkles, img: 'beaute' },
+    { icon: ShoppingBag, img: 'commerce' },
   ]
+  const sectors = sectorMeta.map((m, i) => ({ ...m, title: t.sectors.items[i][0], description: t.sectors.items[i][1] }))
 
-  const values = [
-    { icon: Lightbulb, title: "Innovation qui simplifie la vie" },
-    { icon: Palette, title: "Design qui sublime vos espaces" },
-    { icon: Shield, title: "Fiabilité pour une tranquillité d’esprit" },
-    { icon: Leaf, title: "Durabilité pour l’avenir et la planète" }
-  ]
+  const values = [Lightbulb, Palette, Shield, Leaf].map((icon, i) => ({ icon, title: t.values.items[i] }))
 
-  const marqueeWords = ['Transparent', 'Opaque', 'Intimité', 'Lumière', 'Sans travaux', 'Film PDLC', 'Smart Glass', 'Filtre UV']
+  const marqueeWords = t.marquee
 
-  const navLinks = [
-    { href: '#techno', label: 'Technologie' },
-    { href: '#nos-secteurs', label: 'Secteurs' },
-    { href: '#clients', label: 'Références' },
-    { href: '#en-action', label: 'Réalisations' },
-    { href: '#faq', label: 'FAQ' },
-    { href: '#contact', label: 'Contact' },
-  ]
+  const navLinks = ['#techno', '#nos-secteurs', '#clients', '#en-action', '#faq', '#contact'].map((href, i) => ({ href, label: t.nav[i] }))
 
   // Lazy load videos when visible
   const videosRef = useRef()
@@ -406,8 +416,10 @@ function App() {
   const year = new Date().getFullYear()
 
   return (
-    <div className={`min-h-screen bg-white text-slate-700 antialiased pb-24 md:pb-0 ${isTransparent ? 'is-on' : 'is-off'}`}>
+    <LangContext.Provider value={lang}>
+    <div dir={t.dir} lang={lang === 'ar' ? 'ar' : 'fr'} className={`min-h-screen bg-white text-slate-700 antialiased pb-24 md:pb-0 lang-${lang} ${isTransparent ? 'is-on' : 'is-off'}`}>
       {/* SEO hidden text */}
+      {lang === 'fr' ? (
       <div ref={seoRef} style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
         <h1>Vitres intelligentes au Maroc – Verre PDLC & Film Commutable</h1>
         <h2>Films intelligents et Smart Glass pour bureaux, maisons, hôtels et commerces</h2>
@@ -416,12 +428,22 @@ function App() {
           offrant confidentialité à la demande, design moderne et performance énergétique.
         </p>
       </div>
+      ) : (
+      <div ref={seoRef} style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <h1>Vitres Intelligentes Maroc – الزجاج الذكي وفيلم PDLC: زجاج يتحوّل من شفاف إلى معتم</h1>
+        <h2>أفلام ذكية وزجاج ذكي للمكاتب، المنازل، الفنادق والمحلات التجارية</h2>
+        <p>
+          اكتشفوا حلولنا في <strong>الزجاج الذكي</strong> (الجاج الذكي): فيلم PDLC ذو البلورات السائلة يُثبَّت على الزجاج الموجود،
+          ليمنحكم الخصوصية عند الطلب، تصميماً عصرياً وأداءً طاقياً أفضل، في الدار البيضاء، الرباط، سلا، مراكش وكل أنحاء المغرب.
+        </p>
+      </div>
+      )}
 
       {/* ================= Header (flottant) ================= */}
       <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
-        <div className={`mx-auto max-w-7xl flex items-center justify-between gap-3 rounded-full pl-4 pr-2 py-2 transition-all duration-500 ${scrolled || menuOpen ? 'bg-white/75 backdrop-blur-xl shadow-[0_10px_40px_-15px_rgba(15,27,42,0.35)] ring-1 ring-ink/5' : 'bg-white/0'}`}>
+        <div className={`mx-auto max-w-7xl flex items-center justify-between gap-3 rounded-full ps-4 pe-2 py-2 transition-all duration-500 ${scrolled || menuOpen ? 'bg-white/75 backdrop-blur-xl shadow-[0_10px_40px_-15px_rgba(15,27,42,0.35)] ring-1 ring-ink/5' : 'bg-white/0'}`}>
           <a href="#accueil" className="shrink-0">
-            <img src={logoImage} alt="Vitres intelligentes Maroc – verre PDLC et film commutable" className="h-9 md:h-10 w-auto" />
+            <img src={logoImage} alt={t.logoAlt} className="h-9 md:h-10 w-auto" />
           </a>
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((l) => (
@@ -429,10 +451,18 @@ function App() {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <a href={PHONE_TEL} className="hidden md:inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink hover:bg-ink/5 transition-colors" aria-label={`Appeler le ${PHONE_DISPLAY}`}>
+            <a href={PHONE_TEL} className="hidden md:inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold text-ink hover:bg-ink/5 transition-colors" aria-label={t.callAria(PHONE_DISPLAY)}>
               <Phone className="h-4 w-4 text-teal-600" />
-              <span className="hidden xl:inline">{PHONE_DISPLAY}</span>
+              <span dir="ltr" className="hidden xl:inline">{PHONE_DISPLAY}</span>
             </a>
+            <button
+              type="button"
+              onClick={toggleLang}
+              aria-label={t.switchLangAria}
+              className={`lang-btn ${lang === 'fr' ? 'lang-btn--ar' : ''}`}
+            >
+              {t.switchLang}
+            </button>
             <a
               href={INSTAGRAM_URL}
               target="_blank"
@@ -444,14 +474,14 @@ function App() {
             </a>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-full bg-ink hover:bg-frame text-white text-sm font-semibold px-5 py-2.5 transition-colors"
+              className="hidden sm:inline-flex items-center gap-2 rounded-full bg-ink hover:bg-frame text-white text-sm font-semibold px-5 py-2.5 transition-colors"
             >
-              Devis gratuit
+              {t.devis}
             </a>
             <button
               className="lg:hidden flex h-10 w-10 items-center justify-center rounded-full text-ink hover:bg-ink/5"
               onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Menu"
+              aria-label={t.menu}
               aria-expanded={menuOpen}
             >
               {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -467,7 +497,7 @@ function App() {
               <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="font-medium text-ink flex items-center gap-2">
                 <Instagram className="h-5 w-5" /> @{INSTAGRAM_HANDLE}
               </a>
-              <a href={PHONE_TEL} className="font-semibold text-teal-700 flex items-center gap-2"><Phone className="h-4 w-4" /> Appeler</a>
+              <a href={PHONE_TEL} className="font-semibold text-teal-700 flex items-center gap-2"><Phone className="h-4 w-4" /> {t.call}</a>
             </div>
           </nav>
         )}
@@ -479,23 +509,23 @@ function App() {
         <div className="container relative mx-auto px-4">
           <div className="grid lg:grid-cols-[1.25fr_1fr] gap-8 lg:gap-16 items-end mb-10 md:mb-14">
             <div>
-              <p className="eyebrow">Film PDLC · Smart Glass · Maroc</p>
+              <p className="eyebrow">{t.hero.eyebrow}</p>
               <h1 className="font-extrabold text-ink leading-[0.95] tracking-tight text-[clamp(3rem,9vw,7.5rem)]">
-                Vos vitres,<br />
-                <span className="frost-word" data-text="Réinventées">Réinventées</span>
+                {t.hero.line1}<br />
+                <span className="frost-word">{t.hero.word}</span>
               </h1>
             </div>
             <div className="lg:pb-3">
               <p className="text-xl md:text-2xl text-ink font-medium leading-snug mb-4">
-                Passez de la transparence à l’intimité en un instant. Offrez à vos espaces élégance, confort et innovation.
+                {t.hero.lead}
               </p>
               <p className="text-slate-500 mb-8">
-                Nos films de verre intelligents redéfinissent vos espaces. Sans travaux lourds, vous choisissez : ouverture totale sur la lumière ou bulle d’intimité. Un geste simple, pour un quotidien plus moderne.
+                {t.hero.sub}
               </p>
-              <p className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">Devis gratuit, sans engagement</p>
+              <p className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">{t.hero.devisLabel}</p>
               <ContactButtons size="lg" />
               <a href="#contact" className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-ink transition-colors">
-                ou par formulaire <ArrowRight className="h-4 w-4" />
+                {t.hero.formLink} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </a>
             </div>
           </div>
@@ -504,7 +534,7 @@ function App() {
             <SmartWindow on={isTransparent} windowRef={windowRef} onSwitch={toggleMode} />
           </div>
           <p className="mt-5 text-center text-sm text-slate-500">
-            👉 Utilisez l’interrupteur en bas de l’écran pour voir la transformation instantanée de nos vitres intelligentes — <span className="text-ink font-medium">tout le site réagit.</span></p>
+            {t.hero.caption}<span className="text-ink font-medium">{t.hero.captionStrong}</span></p>
         </div>
       </section>
 
@@ -524,11 +554,11 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-6 items-end mb-12" data-reveal>
             <div>
-              <p className="eyebrow">Comment ça marche</p>
-              <h2 className="section-title">Notre <span className="text-teal-600">Technologie</span></h2>
+              <p className="eyebrow">{t.techno.eyebrow}</p>
+              <h2 className="section-title">{t.techno.title}</h2>
             </div>
             <p className="text-lg text-slate-600 lg:pb-2">
-              Un film mince appliqué <strong className="text-ink">sur vos vitres existantes</strong>. À l’intérieur, des cristaux liquides qui obéissent à un simple interrupteur.
+              {t.techno.intro}
             </p>
           </div>
 
@@ -544,11 +574,11 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-6 items-end mb-12" data-reveal>
             <div>
-              <p className="eyebrow">Pour qui ?</p>
-              <h2 className="section-title">Nos <span className="text-teal-600">Secteurs</span></h2>
+              <p className="eyebrow">{t.sectors.eyebrow}</p>
+              <h2 className="section-title">{t.sectors.title}</h2>
             </div>
             <p className="text-lg text-slate-600 lg:pb-2">
-              Chaque vitre cache un usage. <span className="hidden md:inline">Survolez</span><span className="md:hidden">Touchez</span> une vitre pour la rendre transparente.
+              {t.sectors.introA}<span className="hidden md:inline">{t.sectors.hover}</span><span className="md:hidden">{t.sectors.touch}</span>{t.sectors.introB}
             </p>
           </div>
 
@@ -557,14 +587,14 @@ function App() {
               <button
                 key={index}
                 type="button"
-                className={`pane text-left ${openPane === index ? 'is-open' : ''}`}
+                className={`pane text-start ${openPane === index ? 'is-open' : ''}`}
                 onClick={() => setOpenPane(openPane === index ? null : index)}
                 aria-expanded={openPane === index}
               >
                 {/* Derrière la vitre */}
                 <div className="pane-back">
                   <span className="pane-blob" style={{ '--h': `${168 + index * 9}deg` }} />
-                  <PhotoLayer src={`/images/secteur-${sector.img}-transparent.jpg`} ratio={SECTOR_RATIO} alt={`${sector.title} – vitre intelligente en mode transparent`} loading="lazy" className="pane-photo" />
+                  <PhotoLayer src={`/images/secteur-${sector.img}-transparent.jpg`} ratio={SECTOR_RATIO} alt={`${sector.title} – ${t.sectors.altOn}`} loading="lazy" className="pane-photo" />
                   <span className="pane-shade" />
                   <sector.icon className="h-10 w-10 text-teal-300 mb-auto relative" />
                   <h3 className="relative text-xl font-semibold text-white mb-3">{sector.title}</h3>
@@ -572,7 +602,7 @@ function App() {
                 </div>
                 {/* Le film */}
                 <div className="pane-frost">
-                  <PhotoLayer src={`/images/secteur-${sector.img}-opaque.jpg`} ratio={SECTOR_RATIO} alt={`${sector.title} – vitre intelligente en mode opaque`} loading="lazy" className="pane-photo" />
+                  <PhotoLayer src={`/images/secteur-${sector.img}-opaque.jpg`} ratio={SECTOR_RATIO} alt={`${sector.title} – ${t.sectors.altOff}`} loading="lazy" className="pane-photo" />
                   <span className="pane-veil" />
                   <span className="relative text-xs font-semibold tracking-widest text-ink/60">0{index + 1}</span>
                   <div className="relative">
@@ -591,11 +621,11 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-6 items-end mb-12" data-reveal>
             <div>
-              <p className="eyebrow">Références</p>
-              <h2 className="section-title">Ils nous ont fait <span className="text-teal-600">confiance</span></h2>
+              <p className="eyebrow">{t.clients.eyebrow}</p>
+              <h2 className="section-title">{t.clients.title}</h2>
             </div>
             <p className="text-lg text-slate-600 lg:pb-2">
-              Institutions financières, industriels, hôtels de prestige et particuliers : partout au Maroc, nos vitres intelligentes équipent des espaces exigeants.
+              {t.clients.intro}
             </p>
           </div>
 
@@ -604,7 +634,7 @@ function App() {
               <div key={c.name} className="client-pane group">
                 <span className="client-frost" />
                 <div className="relative flex h-full flex-col">
-                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-slate-500">{c.place}</span>
+                  <span className="text-xs font-semibold tracking-[0.2em] uppercase text-slate-500">{t.clients.places[i]}</span>
                   <p className="mt-auto text-3xl md:text-[2.1rem] font-bold leading-[1.05] tracking-tight text-ink">{c.name}</p>
                   <span className="mt-5 h-1 w-10 rounded-full bg-teal-500 transition-all duration-500 group-hover:w-20" />
                 </div>
@@ -612,11 +642,11 @@ function App() {
             ))}
             <div className="client-pane client-pane--dark group">
               <div className="relative flex h-full flex-col">
-                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-teal-300">Partout au Maroc</span>
+                <span className="text-xs font-semibold tracking-[0.2em] uppercase text-teal-300">{t.clients.manyEyebrow}</span>
                 <p className="mt-auto text-3xl md:text-[2.1rem] font-bold leading-[1.05] tracking-tight text-white">
-                  <span className="text-teal-300">+</span> de nombreux particuliers
+                  <span className="text-teal-300">+</span> {t.clients.many}
                 </p>
-                <p className="mt-3 text-slate-400">Villas, appartements, bureaux à domicile.</p>
+                <p className="mt-3 text-slate-400">{t.clients.manySub}</p>
               </div>
             </div>
           </div>
@@ -628,11 +658,11 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-6 items-end mb-14" data-reveal>
             <div>
-              <p className="eyebrow">En action</p>
-              <h2 className="section-title">Quelques heures de pose. <span className="text-teal-600">Des années d’effet waouh.</span></h2>
+              <p className="eyebrow">{t.reels.eyebrow}</p>
+              <h2 className="section-title">{t.reels.title}</h2>
             </div>
             <p className="text-lg text-slate-600 lg:pb-2">
-              Installation facile, résultat spectaculaire : vos vitres deviennent intelligentes en quelques heures. De la transparence à l’intimité, créez l’ambiance parfaite à tout moment. Vos espaces suivent vos envies.
+              {t.reels.intro}
             </p>
           </div>
 
@@ -645,7 +675,7 @@ function App() {
                       {videosVisible ? (
                         <iframe
                           src={`https://www.instagram.com/reel/${reel.id}/embed/`}
-                          title={`Reel Instagram – ${reel.title}`}
+                          title={`Reel Instagram – ${t.reels.items[idx][0]}`}
                           className="absolute inset-0 h-full w-full"
                           style={{ border: 'none' }}
                           frameBorder="0"
@@ -665,9 +695,9 @@ function App() {
                 <figcaption className="mt-6 px-1">
                   <p className="flex items-center gap-3 font-semibold text-ink">
                     <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-teal-50 text-sm font-bold text-teal-700">0{idx + 1}</span>
-                    {reel.title}
+                    {t.reels.items[idx][0]}
                   </p>
-                  <p className="mt-2 text-slate-600">{reel.text}</p>
+                  <p className="mt-2 text-slate-600">{t.reels.items[idx][1]}</p>
                 </figcaption>
               </figure>
             ))}
@@ -678,12 +708,12 @@ function App() {
               href={INSTAGRAM_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="ig-button inline-flex items-center gap-3 rounded-full pl-2 pr-6 py-2 font-semibold text-white shadow-xl shadow-pink-900/20 transition-transform hover:-translate-y-0.5"
+              className="ig-button inline-flex items-center gap-3 rounded-full ps-2 pe-6 py-2 font-semibold text-white shadow-xl shadow-pink-900/20 transition-transform hover:-translate-y-0.5"
             >
               <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20">
                 <Instagram className="h-5 w-5" />
               </span>
-              Suivre @{INSTAGRAM_HANDLE} sur Instagram
+              <span dir="auto">{t.reels.follow(INSTAGRAM_HANDLE)}</span>
             </a>
           </div>
         </div>
@@ -694,8 +724,8 @@ function App() {
         <div className="pointer-events-none absolute inset-0 glow-bg" />
         <div className="container relative mx-auto px-4 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
           <div data-reveal>
-            <p className="eyebrow eyebrow--light">Notre engagement</p>
-            <h2 className="section-title section-title--light">Nos <span className="text-teal-300">Valeurs</span></h2>
+            <p className="eyebrow eyebrow--light">{t.values.eyebrow}</p>
+            <h2 className="section-title section-title--light">{t.values.title}</h2>
           </div>
           <div>
             {values.map((value, index) => (
@@ -715,95 +745,19 @@ function App() {
       <section id="faq" className="py-24 md:py-32">
         <div className="container mx-auto px-4 grid lg:grid-cols-[0.8fr_1.2fr] gap-12">
           <div className="lg:sticky lg:top-28 self-start" data-reveal>
-            <p className="eyebrow">Tout savoir</p>
-            <h2 className="section-title">Questions <span className="text-teal-600">Fréquentes</span></h2>
+            <p className="eyebrow">{t.faq.eyebrow}</p>
+            <h2 className="section-title">{t.faq.title}</h2>
             <div className="mt-10 rounded-3xl bg-ink p-7 text-white">
-              <p className="text-lg font-semibold">Une autre question ?</p>
-              <p className="mt-1 text-slate-400">Notre équipe vous répond directement.</p>
+              <p className="text-lg font-semibold">{t.faq.other}</p>
+              <p className="mt-1 text-slate-400">{t.faq.otherSub}</p>
               <ContactButtons className="mt-6" />
             </div>
           </div>
 
           <div className="border-t border-slate-200" data-reveal>
-            {[
-              {
-                icon: <Zap className="h-5 w-5 text-teal-600" />,
-                question: "Qu’est‑ce que le film intelligent PDLC et comment fonctionne-t‑il ?",
-                answer: (
-                  <p>
-                    Le film PDLC (Polymer Dispersed Liquid Crystal) est un film mince que nous appliquons <strong>sur une vitre existante</strong> pour la rendre “intelligente”. <br/>
-                    Le film contient des cristaux liquides dans une matrice polymère qui s'organisent différemment selon le branchement électrique :<br/>
-                      - <strong>Sans courant électrique :</strong> les cristaux sont désordonnés → le film paraît <strong><span className="text-teal-600">opaque</span></strong> et protège votre intimité.<br/>
-                      - <strong>Avec courant électrique :</strong> les molécules s’alignent → la vitre redevient <strong><span className="text-teal-600">transparente</span></strong> et laisse passer la lumière.<br/>
-                    Cette technologie transforme vos vitres existantes en surfaces modulables, modernes et sécurisées.
-                  </p>
-                )
-              },
-              {
-                icon: <Sun className="h-5 w-5 text-teal-600" />,
-                question: "Quels bénéfices concrets pour vos espaces ?",
-                answer: (
-                  <p>
-                    <strong>Intimité instantanée</strong> : d’un simple geste, passez de transparent à opaque selon vos besoins.<br/>
-                    <strong>Filtration des UV</strong> : protegez vos intérieurs et vos occupants des rayons ultraviolets.<br/>
-                    <strong>Entretien minimal</strong> : facile à nettoyer, sans mécanisme fragile ni store à dépoussiérer.<br/>
-                    <strong>Économies d’énergie</strong> : Réduisez les coûts de climatisation et de chauffage grâce à ses propriétés d’isolation thermique.<br/>
-                    <strong>Lumière naturelle maximale</strong> : même en mode opaque, la luminosité reste douce et diffuse.<br/>
-                    <strong>Sécurité renforcée</strong> : en cas de bris, le film retient les éclats de verre, évitant toute projection dangereuse.<br/>
-                    <strong>Polyvalence</strong> : sert de cloison dynamique, d’écran de projection HD ou même de tableau blanc interactif dans les salles de réunion.<br/>
-               </p>
-                )
-              },
-              {
-                icon: <Layers className="h-5 w-5 text-teal-600" />,
-                question: "Où installer le film, et quelle gamme choisir selon vos objectifs ?",
-                answer: (
-                  <p>
-                    Nos films s’adaptent à vos usages et ambitions :<br/>
-                    <strong>Essential</strong> : bureaux, salles de réunion, musées — intimité, transparence, projection.<br/>
-                    <strong>Superior</strong> : espaces multi-usages entre vision claire, projection et séparation visuelle.<br/>
-                    <strong>Crystal</strong> : lieux prestigieux demandant transparence optimale et rendu haut de gamme.<br/>
-                    <strong>Ultra</strong> : villas de luxe, hôtels 5 étoiles, laboratoires ou zones hautement sécurisées.
-                  </p>
-                )
-              },
-              {
-                icon: <Shield className="h-5 w-5 text-teal-600" />,
-                question: "Quelle est la différence entre vos “Vitres Intelligentes” et un verre à technologie intégrée ?",
-                answer: (
-                  <p>
-                    - Nos <strong>Vitres Intelligentes</strong> désignent exclusivement le <strong>film PDLC appliqué sur vos vitrages existants</strong>, pour les rendre modulables et “intelligentes” instantanément.<br/>
-                    - Un <strong>verre à technologie intégrée</strong> (ou “smart glass”) intègre la couche PDLC dès sa fabrication, nécessitant de remplacer le vitrage complet et impliquant un coût plus élevé.<br/>
-                    Avec nos films, vous transformez vos vitrages actuels en espaces dynamiques, modernes et sécurisés, <strong>sans changer vos fenêtres</strong>.
-                  </p>
-                )
-              },
-              {
-                icon: <Info className="h-5 w-5 text-teal-600" />,
-                question: "Y a‑t-il des points de vigilance à connaître ?",
-                answer: (
-                  <p>
-                    <strong>Coût</strong> : plus onéreux qu’un vitrage classique, mais le film PDLC reste <em>beaucoup plus économique</em> qu’un verre intelligent intégré.<br/>
-                    <strong>Installation professionnelle</strong> : la pose et le raccordement électrique nécessitent un installateur qualifié.<br/>
-                    <strong>Utilisation intérieure</strong> : conçu pour les espaces intérieurs (bureaux, villas, hôtels, etc.).<br/>
-                    <strong>Alimentation électrique</strong> : un faible courant alternatif est nécessaire pour passer en mode transparent.<br/>
-                    <strong>Technologie encore émergente</strong> : assurez-vous de choisir un <strong>fournisseur fiable</strong> pour garantir la qualité et la durabilité du produit.<br/>
-                  </p>
-                )
-              },
-              {
-                icon: <Award className="h-5 w-5 text-teal-600" />,
-                question: "Quelle durabilité et sécurité pour votre investissement ?",
-                answer: (
-                  <p>
-                    Nos films résistent jusqu’à 105 °C, sont anti-rayures et améliorent l’isolation acoustique d’environ 20 %.<br/>
-                    En cas de casse, ils retiennent les éclats et garantissent un usage sûr et durable.
-                  </p>
-                )
-              }
-              ].map((faq, idx) => (
-                <FAQItem key={idx} index={idx} icon={faq.icon} question={faq.question} answer={faq.answer} />
-              ))}
+            {t.faq.items.map((_, idx) => [Zap, Sun, Layers, Shield, Info, Award, Home][idx % 7]).map((Icon, idx) => (
+              <FAQItem key={lang + idx} index={idx} icon={<Icon className="h-5 w-5 text-teal-600" />} question={t.faq.items[idx][0]} answer={t.faq.items[idx][1]} />
+            ))}
           </div>
         </div>
       </section>
@@ -814,11 +768,11 @@ function App() {
         <div className="container relative mx-auto px-4 pt-24 md:pt-32">
           <div className="grid lg:grid-cols-[1fr_1.1fr] gap-12 lg:gap-20">
             <div data-reveal>
-              <p className="eyebrow eyebrow--light">Contact</p>
-              <h3 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">Prêts à transformer vos vitres ? <span className="text-teal-300">Parlons-en !</span></h3>
+              <p className="eyebrow eyebrow--light">{t.contact.eyebrow}</p>
+              <h3 className="text-4xl md:text-6xl font-bold leading-[1.05] tracking-tight">{t.contact.title}</h3>
               <div className="mt-12 space-y-4">
-                <h3 className="text-lg font-semibold text-slate-300">Nous sommes à votre écoute</h3>
-                <p className="text-slate-400">Le plus rapide pour votre devis gratuit :</p>
+                <h3 className="text-lg font-semibold text-slate-300">{t.contact.listen}</h3>
+                <p className="text-slate-400">{t.contact.fastest}</p>
                 <ContactButtons size="lg" className="pb-4" />
                 {[
                   { href: 'mailto:contact@vitres-intelligentes.com', icon: Mail, label: 'contact@vitres-intelligentes.com' },
@@ -828,7 +782,7 @@ function App() {
                     <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 ring-1 ring-white/10 transition-colors group-hover:bg-teal-400 group-hover:text-ink">
                       <c.icon className="h-5 w-5" />
                     </span>
-                    <span className="text-lg group-hover:text-teal-200 transition-colors">{c.label}</span>
+                    <span dir="ltr" className="text-lg group-hover:text-teal-200 transition-colors">{c.label}</span>
                   </a>
                 ))}
               </div>
@@ -836,11 +790,11 @@ function App() {
 
             {/* Formulaire */}
             <div className="rounded-[2rem] bg-white p-7 md:p-10 text-ink shadow-2xl" data-reveal>
-              <p className="text-2xl font-bold">Ou laissez-nous vos coordonnées</p>
-              <p className="text-slate-500 mb-8">Nous vous rappelons pour votre devis gratuit, sans engagement.</p>
+              <p className="text-2xl font-bold">{t.contact.formTitle}</p>
+              <p className="text-slate-500 mb-8">{t.contact.formSub}</p>
               <form onSubmit={handleContactSubmit} className="grid gap-4 sm:grid-cols-2">
                 <Input
-                  placeholder="Nom"
+                  placeholder={t.contact.name}
                   value={formData.name}
                   onChange={(e) => setFormData({...formData, name: e.target.value})}
                   required
@@ -848,7 +802,7 @@ function App() {
                 />
                 <Input
                   type="email"
-                  placeholder="Email"
+                  placeholder={t.contact.email}
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
                   required
@@ -860,7 +814,8 @@ function App() {
                     value={formData.countryCode}
                     onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
                     className="h-13 bg-paper rounded-xl px-3"
-                    aria-label="Indicatif"
+                    aria-label={t.contact.codeAria}
+                    dir="ltr"
                   >
                     <option value="+212">🇲🇦 +212</option>
                     <option value="+33">🇫🇷 +33</option>
@@ -872,7 +827,7 @@ function App() {
                   </select>
                   <Input
                     type="tel"
-                    placeholder="Téléphone"
+                    placeholder={t.contact.phone}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="flex-1 h-13 rounded-xl bg-paper border-transparent focus-visible:border-teal-500 px-4"
@@ -882,12 +837,12 @@ function App() {
 
                 {/* Surface à équiper */}
                 <fieldset className="sm:col-span-2">
-                  <legend className="mb-3 text-sm font-medium text-slate-500">Surface à équiper</legend>
+                  <legend className="mb-3 text-sm font-medium text-slate-500">{t.contact.surface}</legend>
                   <div className="grid grid-cols-3 gap-2">
                     {[
-                      { value: 'moins de 5 m2', label: 'Moins de 5 m²' },
-                      { value: 'entre 5 et 40 m2', label: '5 à 40 m²' },
-                      { value: 'plus de 40 m2', label: 'Plus de 40 m²' },
+                      { value: 'moins de 5 m2', label: t.contact.surfaces[0] },
+                      { value: 'entre 5 et 40 m2', label: t.contact.surfaces[1] },
+                      { value: 'plus de 40 m2', label: t.contact.surfaces[2] },
                     ].map((o) => (
                       <label key={o.value} className={`cursor-pointer rounded-xl border-2 px-2 py-3 text-center text-sm font-medium transition-colors ${formData.surface === o.value ? 'border-teal-500 bg-teal-50 text-teal-800' : 'border-paper bg-paper hover:border-slate-200'}`}>
                         <input
@@ -910,11 +865,11 @@ function App() {
                   disabled={isSubmitting}
                   className="sm:col-span-2 mt-2 h-14 rounded-full bg-ink hover:bg-frame text-white font-semibold transition-colors disabled:opacity-60 inline-flex items-center justify-center gap-2"
                 >
-                  {isSubmitting ? 'Envoi en cours...' : <>Recevoir mon devis gratuit <ArrowRight className="h-5 w-5" /></>}
+                  {isSubmitting ? t.contact.sending : <>{t.contact.submit} <ArrowRight className="h-5 w-5 rtl:rotate-180" /></>}
                 </button>
                 {submitStatus && (
-                  <p className={`sm:col-span-2 text-sm ${submitStatus.includes('succès') ? 'text-green-600' : 'text-red-600'}`}>
-                    {submitStatus}
+                  <p className={`sm:col-span-2 text-sm ${submitStatus === 'ok' ? 'text-green-600' : 'text-red-600'}`}>
+                    {submitStatus === 'ok' ? t.contact.ok : t.contact.err}
                   </p>
                 )}
               </form>
@@ -923,7 +878,7 @@ function App() {
 
           {/* Bas de page */}
           <div className="mt-24 border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-slate-400">
-            <p>&copy; {year} Vitres Intelligentes Maroc, Noorium Group SARL. Tous droits réservés.</p>
+            <p>{t.footer(year)}</p>
             <div className="flex gap-3">
               {[
                 { href: INSTAGRAM_URL, icon: Instagram, label: 'Instagram', hover: 'hover:bg-[#E1306C]' },
@@ -937,30 +892,32 @@ function App() {
               ))}
             </div>
           </div>
+          <p className="mt-6 text-center text-xs leading-relaxed text-slate-500">{t.seoLine}</p>
           <p className="footer-wordmark" aria-hidden="true">Vitres Intelligentes</p>
         </div>
       </footer>
 
       {/* ===== Dock flottant : interrupteur + appel + WhatsApp (suit le scroll, pensé mobile) ===== */}
-      <div className="dock" role="region" aria-label="Interrupteur et contact rapide">
+      <div className="dock" role="region" aria-label={t.dock.aria}>
         <div className="dock-switch">
-          <WallSwitch on={isTransparent} onToggle={() => toggleMode()} size="dock" hint={!tried ? 'Cliquez !' : null} />
+          <WallSwitch on={isTransparent} onToggle={() => toggleMode()} size="dock" hint={!tried ? t.dock.hint : null} />
           <span className="dock-label">
-            <span className="dock-label-top">Vitres</span>
-            <span className="dock-label-state">{isTransparent ? 'Transparentes' : 'Opaques'}</span>
+            <span className="dock-label-top">{t.dock.label}</span>
+            <span className="dock-label-state">{isTransparent ? t.dock.on : t.dock.off}</span>
           </span>
         </div>
         <span className="dock-sep" aria-hidden="true" />
-        <a href={PHONE_TEL} className="dock-btn dock-btn--call" aria-label={`Appeler le ${PHONE_DISPLAY}`}>
+        <a href={PHONE_TEL} className="dock-btn dock-btn--call" aria-label={t.callAria(PHONE_DISPLAY)}>
           <Phone className="h-5 w-5" />
-          <span className="dock-btn-text">Appeler</span>
+          <span className="dock-btn-text">{t.call}</span>
         </a>
-        <button onClick={openWhatsApp} className="dock-btn dock-btn--wa" aria-label="WhatsApp">
+        <button onClick={() => openWhatsApp(lang)} className="dock-btn dock-btn--wa" aria-label={t.whatsappAria}>
           <img src={whatsappIcon} alt="" className="h-5 w-5 invert" />
-          <span className="dock-btn-text">WhatsApp</span>
+          <span className="dock-btn-text">{t.whatsapp}</span>
         </button>
       </div>
     </div>
+    </LangContext.Provider>
   )
 }
 

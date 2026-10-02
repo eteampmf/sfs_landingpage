@@ -1,0 +1,8 @@
+Police arabe du site : Loew Next Arabic
+Déposez ici les fichiers web (format .woff2) avec EXACTEMENT ces noms :
+  LoewNextArabic-Regular.woff2
+  LoewNextArabic-Medium.woff2
+  LoewNextArabic-Bold.woff2
+  LoewNextArabic-ExtraBold.woff2
+(Vérifiez que votre licence autorise l'usage web.)
+Tant qu'ils manquent, le site utilise la police Cairo à la place.

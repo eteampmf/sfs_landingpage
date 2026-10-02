@@ -632,3 +632,36 @@ body { font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif; }
 /* the photo frame: a quick tap must not be eaten by scrolling */
 .smart-window { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
 @media (max-width: 767px) { .smart-window { --wipe: 120px; } }
+
+/* ---------- Bouton langue ---------- */
+.lang-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0 14px; border-radius: 999px;
+  font-size: 14px; font-weight: 700; color: var(--color-ink);
+  border: 1.5px solid rgba(15,27,42,.15);
+  transition: background-color .2s, color .2s, border-color .2s;
+}
+.lang-btn:hover { background: var(--color-ink); color: #fff; border-color: var(--color-ink); }
+.lang-btn--ar { font-family: 'Loew Next Arabic', 'Cairo', sans-serif; font-size: 15px; }
+
+/* ---------- Arabe : police Loew Next Arabic ----------
+   Déposez les fichiers web de la police (licence web requise) dans public/fonts/
+   avec ces noms. Tant qu'ils manquent, Cairo (Google Fonts) est utilisée. */
+@font-face { font-family: 'Loew Next Arabic'; src: url('/fonts/LoewNextArabic-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Loew Next Arabic'; src: url('/fonts/LoewNextArabic-Medium.woff2') format('woff2'); font-weight: 500; font-display: swap; }
+@font-face { font-family: 'Loew Next Arabic'; src: url('/fonts/LoewNextArabic-Bold.woff2') format('woff2'); font-weight: 700; font-display: swap; }
+@font-face { font-family: 'Loew Next Arabic'; src: url('/fonts/LoewNextArabic-ExtraBold.woff2') format('woff2'); font-weight: 800; font-display: swap; }
+
+.lang-ar, .lang-ar * { font-family: 'Loew Next Arabic', 'Cairo', 'Poppins', sans-serif; }
+/* letter-spacing breaks Arabic letter joining */
+.lang-ar * { letter-spacing: 0 !important; }
+.lang-ar .section-title { line-height: 1.25; }
+.lang-ar h1 { line-height: 1.15 !important; }
+.lang-ar .eyebrow { text-transform: none; font-size: .85rem; }
+[dir="rtl"] { overflow-x: clip; }
+/* keep the scrolling band and phone numbers left-to-right mechanics */
+[dir="rtl"] .marquee-track { direction: ltr; }
+[dir="rtl"] .marquee-word { direction: rtl; }
+[dir="rtl"] .value-row:hover h3 { transform: translateX(-10px); }
+[dir="rtl"] .switch-hint--left { right: auto; left: calc(100% + 14px); }
+

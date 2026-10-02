@@ -7,6 +7,14 @@ import path from 'path'
 export default defineConfig({
     base: '',  // 🔹 important for GitHub Pages project site
   plugins: [react(),tailwindcss()],
+  build: {
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+        ar: path.resolve(__dirname, 'ar/index.html'),
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

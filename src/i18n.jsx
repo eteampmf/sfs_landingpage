@@ -58,6 +58,14 @@ export const T = {
       offText: 'les cristaux sont désordonnés → le film paraît opaque et protège votre intimité.',
       onLabel: 'Avec courant électrique :',
       onText: 'les molécules s’alignent → la vitre redevient transparente.',
+      toggleAria: 'Allumer ou couper le courant',
+      offBtn: 'Courant coupé',
+      onBtn: 'Courant activé',
+      opaqueTag: 'Opaque',
+      clearTag: 'Transparente',
+      seeLabel: 'Ce que vous voyez',
+      zoomHint: 'Zoom',
+      zoomLabel: 'Dans le film, vu de très près',
     },
 
     sectors: {
@@ -247,6 +255,14 @@ export const T = {
       offText: 'البلورات مبعثرة ← يبدو الفيلم معتماً ويحمي خصوصيتكم.',
       onLabel: 'مع التيار الكهربائي:',
       onText: 'تصطفّ الجزيئات ← يعود الزجاج شفافاً.',
+      toggleAria: 'تشغيل التيار أو قطعه',
+      offBtn: 'التيار مقطوع',
+      onBtn: 'التيار مُشغَّل',
+      opaqueTag: 'معتم',
+      clearTag: 'شفاف',
+      seeLabel: 'ما ترونه',
+      zoomHint: 'تكبير',
+      zoomLabel: 'داخل الفيلم عن قرب',
     },
 
     sectors: {

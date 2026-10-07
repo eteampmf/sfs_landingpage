@@ -143,28 +143,7 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
     el.style.setProperty('--y', `${e.clientY - r.top}px`)
   }
 
-  // Sur téléphone : la vitre s'éclaircit progressivement pendant le scroll
-  const [scrollR, setScrollR] = useState(0)
-  useEffect(() => {
-    const touch = window.matchMedia('(hover: none)').matches
-    if (!touch) return
-    let raf = 0
-    const onScroll = () => {
-      cancelAnimationFrame(raf)
-      raf = requestAnimationFrame(() => {
-        const el = windowRef.current; if (!el) return
-        const r = el.getBoundingClientRect(); const vh = window.innerHeight
-        // 0 when the window enters the bottom of the screen, 1 when its centre reaches 35% of the screen
-        const p = Math.min(1, Math.max(0, (vh - (r.top + r.height / 2)) / (vh * 0.65)))
-        el.style.setProperty('--x', '50%'); el.style.setProperty('--y', '55%')
-        setScrollR(p)
-      })
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf) }
-  }, [])
-  const radius = on ? '150vmax' : hover ? 'var(--wipe)' : scrollR > 0.02 ? `${Math.round(scrollR * 75)}vmax` : '0px'
+  const radius = on ? '150vmax' : hover ? 'var(--wipe)' : '0px'
   const t = useT().window
 
   return (
@@ -208,61 +187,74 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
 /* ==================================================================
    Comment ça marche : les cristaux liquides s'alignent
 ================================================================== */
-function CrystalDemo({ on, onToggle, hint }) {
+function CrystalDemo({ on, onToggle }) {
+  // 5 x 5 liquid crystals seen "under the microscope": scattered without power, lined up with power
   const crystals = useMemo(() => {
-    let seed = 7
+    let seed = 11
     const rand = () => { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646 }
-    return Array.from({ length: 96 }, (_, i) => ({
-      rot: Math.round(rand() * 160 - 80),
-      delay: Math.round(rand() * 350 + (i % 12) * 25),
+    return Array.from({ length: 25 }, (_, i) => ({
+      rot: Math.round(rand() * 150 - 75) || 40,
+      delay: Math.round((i % 5) * 70 + rand() * 120),
     }))
   }, [])
   const t = useT().techno
 
   return (
-    <div className="crystal-demo relative overflow-hidden rounded-[2rem] bg-ink p-6 md:p-10 text-white">
+    <div className="crystal-demo relative overflow-hidden rounded-[2rem] bg-ink p-5 md:p-10 text-white">
       <div className="pointer-events-none absolute inset-0 glow-bg" />
-      <div className="relative grid items-center gap-6 md:grid-cols-[1fr_auto_1fr]">
-        {/* Lumière */}
-        <div className="flex items-center gap-4 md:flex-col md:items-start">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-300/15 ring-1 ring-amber-200/30">
-            <Sun className="h-6 w-6 text-amber-200" />
-          </span>
-          <div className="rays rays-in flex-1 w-full">
-            {[0,1,2,3,4].map(i => <span key={i} className="ray" style={{ '--i': i }} />)}
-          </div>
-        </div>
 
-        {/* Film */}
-        <div className="film mx-auto rounded-2xl p-4 md:p-5">
-          <div className="grid grid-cols-12 gap-x-2 gap-y-3 md:gap-x-3 md:gap-y-4">
-            {crystals.map((c, i) => (
-              <span key={i} className="crystal" style={{ '--rot': `${c.rot}deg`, '--d': `${c.delay}ms` }} />
-            ))}
-          </div>
-        </div>
-
-        {/* Votre espace */}
-        <div className="flex flex-row-reverse items-center gap-4 md:flex-col md:items-end">
-          <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-300/10 ring-1 ring-teal-200/30">
-            <Eye className="h-6 w-6 text-teal-200" />
-          </span>
-          <div className="rays rays-out flex-1 w-full">
-            {[0,1,2,3,4].map(i => <span key={i} className="ray" style={{ '--i': i }} />)}
-          </div>
-        </div>
+      {/* 1. the choice is explicit: no power / power */}
+      <div className="relative mx-auto mb-7 md:mb-10 grid max-w-md grid-cols-2 rounded-full bg-white/10 p-1 ring-1 ring-white/15" role="group" aria-label={t.toggleAria}>
+        <button type="button" aria-pressed={!on} onClick={() => on && onToggle()}
+          className={`tech-btn ${!on ? 'tech-btn--active' : ''}`}>
+          <span className="tech-dot" /> {t.offBtn}
+        </button>
+        <button type="button" aria-pressed={on} onClick={() => !on && onToggle()}
+          className={`tech-btn ${on ? 'tech-btn--active tech-btn--on' : ''}`}>
+          <Zap className="h-4 w-4" /> {t.onBtn}
+        </button>
       </div>
 
-      <div className="relative mt-8 flex flex-col md:flex-row md:items-center gap-6 justify-between border-t border-white/10 pt-6">
-        <div className="grid sm:grid-cols-2 gap-4 text-sm md:text-base max-w-3xl">
-          <p className={`transition-opacity ${on ? 'opacity-40' : 'opacity-100'}`}>
-            <strong className="text-white">{t.offLabel}</strong> <span className="text-slate-300">{t.offText}</span>
-          </p>
-          <p className={`transition-opacity ${on ? 'opacity-100' : 'opacity-40'}`}>
-            <strong className="text-teal-300">{t.onLabel}</strong> <span className="text-slate-300">{t.onText}</span>
-          </p>
+      <div className="relative grid items-center gap-4 md:gap-8 md:grid-cols-[1fr_auto_1fr]">
+        {/* 2. what you see */}
+        <figure>
+          <div className="tech-window relative mx-auto aspect-[16/10] w-full max-w-md overflow-hidden rounded-2xl bg-frame ring-1 ring-white/15">
+            <img src={DEMO_IMAGES.opaque} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+            <img src={DEMO_IMAGES.clear} alt="" loading="lazy" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${on ? 'opacity-100' : 'opacity-0'}`} />
+            <span className="tech-lens" aria-hidden="true" />
+            <span className={`absolute start-3 top-3 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${on ? 'bg-teal-400/90 text-ink' : 'bg-white/85 text-ink'}`}>
+              {on ? t.clearTag : t.opaqueTag}
+            </span>
+          </div>
+          <figcaption className="mt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t.seeLabel}</figcaption>
+        </figure>
+
+        <div className="tech-arrow mx-auto flex items-center gap-2 text-xs text-slate-400 md:flex-col" aria-hidden="true">
+          <Plus className="h-4 w-4" /><span>{t.zoomHint}</span><ArrowRight className="h-4 w-4 rotate-90 md:rotate-0 rtl:md:rotate-180" />
         </div>
+
+        {/* 3. inside the film, magnified */}
+        <figure>
+          <div className="tech-zoom relative mx-auto aspect-square w-full max-w-[17rem] md:max-w-[19rem] overflow-hidden rounded-full">
+            <div className="tech-beams" aria-hidden="true">
+              {[0, 1, 2].map(i => <span key={i} className="tech-beam" style={{ '--i': i }} />)}
+            </div>
+            <div className="absolute inset-[16%] grid grid-cols-5 place-items-center">
+              {crystals.map((c, i) => (
+                <span key={i} className="lc" style={{ '--rot': `${c.rot}deg`, '--d': `${c.delay}ms` }} />
+              ))}
+            </div>
+            <span className="tech-haze" aria-hidden="true" />
+          </div>
+          <figcaption className="mt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t.zoomLabel}</figcaption>
+        </figure>
       </div>
+
+      {/* 4. one sentence for the current state only */}
+      <p className="relative mx-auto mt-7 md:mt-10 max-w-2xl text-center text-base md:text-lg" aria-live="polite">
+        <strong className={on ? 'text-teal-300' : 'text-white'}>{on ? t.onLabel : t.offLabel}</strong>{' '}
+        <span className="text-slate-300">{on ? t.onText : t.offText}</span>
+      </p>
     </div>
   )
 }

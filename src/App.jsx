@@ -215,40 +215,29 @@ function CrystalDemo({ on, onToggle }) {
         </button>
       </div>
 
-      <div className="relative grid items-center gap-4 md:gap-8 md:grid-cols-[1fr_auto_1fr]">
-        {/* 2. what you see */}
-        <figure>
-          <div className="tech-window relative mx-auto aspect-[16/10] w-full max-w-md overflow-hidden rounded-2xl bg-frame ring-1 ring-white/15">
-            <img src={DEMO_IMAGES.opaque} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
-            <img src={DEMO_IMAGES.clear} alt="" loading="lazy" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${on ? 'opacity-100' : 'opacity-0'}`} />
-            <span className="tech-lens" aria-hidden="true" />
-            <span className={`absolute start-3 top-3 rounded-full px-3 py-1 text-xs font-semibold backdrop-blur ${on ? 'bg-teal-400/90 text-ink' : 'bg-white/85 text-ink'}`}>
-              {on ? t.clearTag : t.opaqueTag}
-            </span>
-          </div>
-          <figcaption className="mt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t.seeLabel}</figcaption>
-        </figure>
+      {/* 2. the real window, with a magnifying lens placed right on the glass */}
+      <figure className="relative mx-auto max-w-4xl">
+        <div className="tech-window relative aspect-[4/3] sm:aspect-[16/10] w-full overflow-hidden rounded-2xl md:rounded-3xl bg-frame ring-1 ring-white/15">
+          <img src={DEMO_IMAGES.opaque} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={DEMO_IMAGES.clear} alt="" loading="lazy" className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${on ? 'opacity-100' : 'opacity-0'}`} />
+          <span className={`absolute start-3 top-3 md:start-5 md:top-5 z-10 rounded-full px-3 py-1 text-xs md:text-sm font-semibold backdrop-blur transition-colors ${on ? 'bg-teal-400/90 text-ink' : 'bg-white/85 text-ink'}`}>
+            {on ? t.clearTag : t.opaqueTag}
+          </span>
 
-        <div className="tech-arrow mx-auto flex items-center gap-2 text-xs text-slate-400 md:flex-col" aria-hidden="true">
-          <Plus className="h-4 w-4" /><span>{t.zoomHint}</span><ArrowRight className="h-4 w-4 rotate-90 md:rotate-0 rtl:md:rotate-180" />
-        </div>
-
-        {/* 3. inside the film, magnified */}
-        <figure>
-          <div className="tech-zoom relative mx-auto aspect-square w-full max-w-[17rem] md:max-w-[19rem] overflow-hidden rounded-full">
+          <div className="tech-lens">
             <div className="tech-beams" aria-hidden="true">
               {[0, 1, 2].map(i => <span key={i} className="tech-beam" style={{ '--i': i }} />)}
             </div>
-            <div className="absolute inset-[16%] grid grid-cols-5 place-items-center">
+            <div className="absolute inset-[15%] grid grid-cols-5 place-items-center">
               {crystals.map((c, i) => (
                 <span key={i} className="lc" style={{ '--rot': `${c.rot}deg`, '--d': `${c.delay}ms` }} />
               ))}
             </div>
             <span className="tech-haze" aria-hidden="true" />
+            <span className="tech-lens-tag">{t.zoomLabel}</span>
           </div>
-          <figcaption className="mt-3 text-center text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{t.zoomLabel}</figcaption>
-        </figure>
-      </div>
+        </div>
+      </figure>
 
       {/* 4. one sentence for the current state only */}
       <p className="relative mx-auto mt-7 md:mt-10 max-w-2xl text-center text-base md:text-lg" aria-live="polite">
@@ -934,7 +923,11 @@ function App() {
           <WallSwitch on={isTransparent} onToggle={() => toggleMode()} size="dock" hint={!tried && !hintGone ? t.dock.hint : null} />
           <span className="dock-label">
             <span className="dock-label-top">{t.dock.label}</span>
-            <span className="dock-label-state">{isTransparent ? t.dock.on : t.dock.off}</span>
+            <span className="dock-label-state">
+              {/* both words are stacked in the same spot, so the dock keeps the width of the longest one and never jumps */}
+              <span aria-hidden={!isTransparent} className={isTransparent ? '' : 'invisible'}>{t.dock.on}</span>
+              <span aria-hidden={isTransparent} className={isTransparent ? 'invisible' : ''}>{t.dock.off}</span>
+            </span>
           </span>
         </div>
         <span className="dock-sep" aria-hidden="true" />

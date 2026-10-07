@@ -65,7 +65,7 @@ export const T = {
       clearTag: 'Transparente',
       seeLabel: 'Ce que vous voyez',
       zoomHint: 'Zoom',
-      zoomLabel: 'Dans le film, vu de très près',
+      zoomLabel: 'Le film, vu de très près',
     },
 
     sectors: {
@@ -262,7 +262,7 @@ export const T = {
       clearTag: 'شفاف',
       seeLabel: 'ما ترونه',
       zoomHint: 'تكبير',
-      zoomLabel: 'داخل الفيلم عن قرب',
+      zoomLabel: 'الفيلم عن قرب',
     },
 
     sectors: {

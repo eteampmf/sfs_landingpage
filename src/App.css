@@ -753,18 +753,24 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .tech-dot { width: .55rem; height: .55rem; border-radius: 9999px; background: currentColor; opacity: .5; }
 
 .tech-lens {
-  position: absolute; left: 50%; top: 50%; width: 22%; aspect-ratio: 1; transform: translate(-50%, -50%);
-  border-radius: 9999px; border: 2px solid #fff; box-shadow: 0 0 0 4px rgba(15,27,42,.25), 0 0 24px rgba(255,255,255,.5);
+  position: absolute; left: 50%; top: 48%; transform: translate(-50%, -50%);
+  width: clamp(150px, 38%, 330px); aspect-ratio: 1; border-radius: 9999px; overflow: visible;
+  container-type: inline-size;
+  border: 3px solid rgba(255,255,255,.95);
+  background: radial-gradient(circle at 50% 45%, rgba(30,58,82,.82), rgba(11,22,34,.9) 75%);
+  backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.18), 0 24px 60px -18px rgba(0,0,0,.75);
 }
-.tech-zoom {
-  border: 3px solid rgba(255,255,255,.85);
-  background: radial-gradient(circle at 50% 45%, #1e3a52, #0b1622 75%);
-  box-shadow: 0 0 0 8px rgba(255,255,255,.06), 0 20px 50px -20px rgba(0,0,0,.7);
+.tech-lens > .tech-beams, .tech-lens > .tech-haze { border-radius: 9999px; overflow: hidden; }
+.tech-lens-tag {
+  position: absolute; left: 50%; bottom: -14px; transform: translateX(-50%); white-space: nowrap;
+  border-radius: 9999px; background: #fff; color: var(--color-ink); padding: .25rem .75rem;
+  font-size: .7rem; font-weight: 600; box-shadow: 0 6px 16px -6px rgba(0,0,0,.5);
 }
 /* light enters from the left: blocked & scattered without power, straight through with power */
-.tech-beams { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; gap: 22%; padding: 0 0 0 0; }
+.tech-beams { position: absolute; inset: 0; display: flex; padding-inline: 0 !important; flex-direction: column; justify-content: center; gap: 22%; padding: 0 0 0 0; }
 .tech-beam {
-  display: block; height: 6px; border-radius: 6px; transform-origin: left center;
+  display: block; height: 2.4cqw; border-radius: 6px; transform-origin: left center;
   background: linear-gradient(90deg, rgba(253,230,138,.95), rgba(253,230,138,.55));
   box-shadow: 0 0 14px rgba(253,230,138,.6);
   transform: scaleX(.38); opacity: .9;
@@ -773,7 +779,7 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 }
 .is-on .tech-beam { transform: scaleX(1); }
 .lc {
-  display: block; width: 30px; height: 9px; border-radius: 9px;
+  display: block; width: 13cqw; height: 4cqw; border-radius: 9px;
   background: linear-gradient(180deg, #e6f6fd, #89c0d9); box-shadow: 0 0 8px rgba(137,192,217,.6);
   transform: rotate(var(--rot));
   transition: transform .8s cubic-bezier(.34,1.4,.64,1) var(--d);
@@ -787,6 +793,24 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 }
 .is-on .tech-haze { opacity: 0; }
 @media (max-width: 640px) {
-  .lc { width: 22px; height: 7px; }
   .tech-btn { font-size: .82rem; padding: .6rem .5rem; }
+}
+
+/* ---------- Dock: fixed width whatever the state ("Opaques" / "Transparentes") ---------- */
+.dock-label-state { display: grid; min-width: 0 !important; }
+.dock-label-state > span { grid-area: 1 / 1; white-space: nowrap; }
+.dock-label { flex-shrink: 0; }
+.dock-btn { flex-shrink: 0; }
+@media (max-width: 420px) {
+  .dock-label-state { font-size: 13px; }
+  .dock-label-top { font-size: 10px; }
+}
+/* very small phones (iPhone SE…): the switch speaks for itself, the words step aside */
+@media (max-width: 360px) {
+  .dock-label { display: none; }
+}
+@media (max-width: 420px) {
+  .dock { gap: 6px !important; padding-inline-end: 8px !important; }
+  .wall-switch--dock { width: 84px !important; }
+  .dock-switch { gap: 8px; padding-right: 2px; }
 }

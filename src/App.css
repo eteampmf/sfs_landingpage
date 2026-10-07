@@ -665,3 +665,80 @@ body { font-family: 'Poppins', ui-sans-serif, system-ui, sans-serif; }
 [dir="rtl"] .value-row:hover h3 { transform: translateX(-10px); }
 [dir="rtl"] .switch-hint--left { right: auto; left: calc(100% + 14px); }
 
+/* ---------- iPhone / Safari ---------- */
+/* notch + home bar: keep the header and the remote inside the safe area */
+header.fixed { padding-top: max(12px, env(safe-area-inset-top)); padding-left: max(12px, env(safe-area-inset-left)); padding-right: max(12px, env(safe-area-inset-right)); }
+.dock { bottom: max(14px, calc(env(safe-area-inset-bottom) + 8px)); }
+@media (max-width: 640px) {
+  .dock { width: calc(100vw - 20px - env(safe-area-inset-left) - env(safe-area-inset-right)); }
+}
+/* the page must not hide behind the remote on phones */
+@media (max-width: 767px) { .min-h-screen { padding-bottom: calc(110px + env(safe-area-inset-bottom)); } }
+/* iOS zooms into any field under 16px: keep form fields at 16px */
+input, select, textarea { font-size: 16px !important; }
+/* Safari needs the prefixed blur */
+.dock, .glass-frame, .pane-frost, [class*="backdrop-blur"] { -webkit-backdrop-filter: blur(16px) saturate(1.3); }
+/* no blue flash, no sticky hover on tap */
+a, button, .pane { -webkit-tap-highlight-color: transparent; }
+@media (hover: none) {
+  .wall-switch:hover { scale: none; }
+  .range-card:hover, .client-pane:hover, .ig-tile:hover { transform: none; }
+}
+/* stable sizes when Safari's address bar shows/hides */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* ======================= Téléphones : échelle et rythme ======================= */
+@media (max-width: 640px) {
+  /* calmer, less "zoomed" type scale */
+  #accueil h1 { font-size: 2.6rem !important; line-height: 1.02; }
+  .lang-ar #accueil h1 { font-size: 2.4rem !important; line-height: 1.2 !important; }
+  .section-title { font-size: clamp(1.75rem, 7.2vw, 2.2rem); line-height: 1.12; }
+  .text-xl, .md\:text-2xl { font-size: 1.05rem !important; line-height: 1.5 !important; }
+  .text-lg { font-size: 1rem !important; line-height: 1.6 !important; }
+  .eyebrow { font-size: .68rem; margin-bottom: .75rem; }
+  .eyebrow::before { width: 18px; }
+  /* tighter vertical rhythm */
+  section.py-24, footer .pt-24 { padding-top: 3.5rem !important; }
+  section.py-24 { padding-bottom: 3.5rem !important; }
+  #accueil { padding-top: 6rem !important; padding-bottom: 2rem !important; }
+  .mb-12, .mb-14 { margin-bottom: 1.75rem !important; }
+  .mt-24 { margin-top: 3rem !important; }
+  .container { padding-left: 18px !important; padding-right: 18px !important; }
+  /* blocks */
+  .marquee-word { font-size: 1.6rem; }
+  .bg-ink.py-6 { padding-top: 1rem; padding-bottom: 1rem; }
+  .crystal-demo { padding: 1.25rem; }
+  .facade { gap: 6px; padding: 6px; border-radius: 22px; }
+  .pane { min-height: 240px; }
+  .pane-back, .pane-frost { padding: 20px; }
+  .pane .text-xl, .pane .md\:text-2xl { font-size: 1.15rem !important; }
+  .client-pane { min-height: 150px; padding: 20px; border-width: 4px; }
+  .client-pane .text-3xl { font-size: 1.5rem; }
+  .value-row { padding: 1.1rem 0; gap: 1rem; }
+  .value-row h3 { font-size: 1.15rem !important; }
+  .value-row > span:last-child { width: 44px; height: 44px; }
+  #faq .rounded-3xl.bg-ink { padding: 1.25rem; margin-top: 1.5rem; }
+  #contact .text-4xl { font-size: 1.9rem; }
+  #contact .rounded-\[2rem\] { padding: 1.25rem; }
+  .footer-wordmark { font-size: 2.6rem; }
+  /* transitions when a pane clears during scroll */
+  .pane-frost { transition: opacity .9s ease; }
+  /* reveal: a bit more motion so scrolling feels alive */
+  [data-reveal] { translate: 0 36px; transition: opacity .8s ease, translate .8s cubic-bezier(.2,.7,.2,1); }
+}
+/* the hero glass radius follows the scroll smoothly on touch screens */
+@media (hover: none) { .smart-window { transition: --r .35s linear; } }
+
+/* ---- Phones, round 2 ---- */
+@media (hover: none) {
+  /* the frosted word can't be hovered on a phone: let it breathe clear and frosted on its own */
+  .is-off .frost-word { animation: frost-breathe 4.5s ease-in-out infinite; }
+  @keyframes frost-breathe { 0%, 100% { filter: blur(5px); opacity: .55; } 45%, 60% { filter: blur(0); opacity: 1; } }
+}
+@media (max-width: 640px) {
+  .client-pane { min-height: 120px; padding: 16px; border-width: 3px; border-radius: 18px; }
+  .client-pane .text-3xl { font-size: 1.15rem; }
+  .client-pane .text-xs { font-size: .6rem; letter-spacing: .12em; }
+  .client-pane .mt-5 { margin-top: .75rem; }
+  .client-pane .mt-3 { margin-top: .35rem; font-size: .8rem; line-height: 1.3; }
+}

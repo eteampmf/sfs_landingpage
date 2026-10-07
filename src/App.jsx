@@ -143,7 +143,28 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
     el.style.setProperty('--y', `${e.clientY - r.top}px`)
   }
 
-  const radius = on ? '150vmax' : hover ? 'var(--wipe)' : '0px'
+  // Sur téléphone : la vitre s'éclaircit progressivement pendant le scroll
+  const [scrollR, setScrollR] = useState(0)
+  useEffect(() => {
+    const touch = window.matchMedia('(hover: none)').matches
+    if (!touch) return
+    let raf = 0
+    const onScroll = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => {
+        const el = windowRef.current; if (!el) return
+        const r = el.getBoundingClientRect(); const vh = window.innerHeight
+        // 0 when the window enters the bottom of the screen, 1 when its centre reaches 35% of the screen
+        const p = Math.min(1, Math.max(0, (vh - (r.top + r.height / 2)) / (vh * 0.65)))
+        el.style.setProperty('--x', '50%'); el.style.setProperty('--y', '55%')
+        setScrollR(p)
+      })
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => { window.removeEventListener('scroll', onScroll); cancelAnimationFrame(raf) }
+  }, [])
+  const radius = on ? '150vmax' : hover ? 'var(--wipe)' : scrollR > 0.02 ? `${Math.round(scrollR * 75)}vmax` : '0px'
   const t = useT().window
 
   return (
@@ -321,6 +342,13 @@ function App() {
 
   const [menuOpen, setMenuOpen] = useState(false)
   const [tried, setTried] = useState(false)
+  const [hintGone, setHintGone] = useState(false)
+  useEffect(() => {
+    // the 'Cliquez !' bubble invites once, then gets out of the way while reading
+    const onS = () => { if (window.scrollY > window.innerHeight * 1.8) { setHintGone(true); window.removeEventListener('scroll', onS) } }
+    window.addEventListener('scroll', onS, { passive: true })
+    return () => window.removeEventListener('scroll', onS)
+  }, [])
   const [scrolled, setScrolled] = useState(false)
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -340,6 +368,16 @@ function App() {
   }, [])
 
   const [openPane, setOpenPane] = useState(null)
+  const [focusPane, setFocusPane] = useState(null)
+  useEffect(() => {
+    if (!window.matchMedia('(hover: none)').matches) return
+    const panes = document.querySelectorAll('.pane')
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => { if (en.isIntersecting) setFocusPane(Number(en.target.dataset.index)) })
+    }, { rootMargin: '-45% 0px -45% 0px' })
+    panes.forEach((p) => io.observe(p))
+    return () => io.disconnect()
+  }, [])
 
   const [formData, setFormData] = useState({
     name: '',
@@ -441,7 +479,7 @@ function App() {
 
       {/* ================= Header (flottant) ================= */}
       <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3">
-        <div className={`mx-auto max-w-7xl flex items-center justify-between gap-3 rounded-full ps-4 pe-2 py-2 transition-all duration-500 ${scrolled || menuOpen ? 'bg-white/75 backdrop-blur-xl shadow-[0_10px_40px_-15px_rgba(15,27,42,0.35)] ring-1 ring-ink/5' : 'bg-white/0'}`}>
+        <div className={`mx-auto max-w-7xl flex items-center justify-between gap-3 rounded-full ps-4 pe-2 py-2 transition-all duration-500 ${scrolled || menuOpen ? 'bg-white/90 backdrop-blur-xl shadow-[0_10px_40px_-15px_rgba(15,27,42,0.35)] ring-1 ring-ink/5' : 'bg-white/0'}`}>
           <a href="#accueil" className="shrink-0">
             <img src={logoImage} alt={t.logoAlt} className="h-9 md:h-10 w-auto" />
           </a>
@@ -506,20 +544,20 @@ function App() {
       {/* ================= Hero ================= */}
       <section id="accueil" className="relative pt-28 md:pt-32 pb-10 md:pb-16 overflow-hidden">
         <div className="pointer-events-none absolute inset-0 hero-bg" />
-        <div className="container relative mx-auto px-4">
-          <div className="grid lg:grid-cols-[1.25fr_1fr] gap-8 lg:gap-16 items-end mb-10 md:mb-14">
-            <div>
+        <div className="container relative mx-auto px-4 flex flex-col lg:block">
+          <div className="max-lg:contents lg:grid lg:grid-cols-[1.25fr_1fr] lg:gap-16 lg:items-end lg:mb-14">
+            <div className="order-1 mb-6 lg:mb-0">
               <p className="eyebrow">{t.hero.eyebrow}</p>
               <h1 className="font-extrabold text-ink leading-[0.95] tracking-tight text-[clamp(3rem,9vw,7.5rem)]">
                 {t.hero.line1}<br />
                 <span className="frost-word">{t.hero.word}</span>
               </h1>
             </div>
-            <div className="lg:pb-3">
+            <div className="order-3 mt-8 lg:mt-0 lg:pb-3">
               <p className="text-xl md:text-2xl text-ink font-medium leading-snug mb-4">
                 {t.hero.lead}
               </p>
-              <p className="text-slate-500 mb-8">
+              <p className="hidden sm:block text-slate-500 mb-8">
                 {t.hero.sub}
               </p>
               <p className="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">{t.hero.devisLabel}</p>
@@ -530,10 +568,10 @@ function App() {
             </div>
           </div>
 
-          <div className="aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
+          <div className="order-2 aspect-[4/3] sm:aspect-[16/10] lg:aspect-[21/9]">
             <SmartWindow on={isTransparent} windowRef={windowRef} onSwitch={toggleMode} />
           </div>
-          <p className="mt-5 text-center text-sm text-slate-500">
+          <p className="order-2 mt-4 lg:mt-5 text-center text-sm text-slate-500">
             {t.hero.caption}<span className="text-ink font-medium">{t.hero.captionStrong}</span></p>
         </div>
       </section>
@@ -587,7 +625,8 @@ function App() {
               <button
                 key={index}
                 type="button"
-                className={`pane text-start ${openPane === index ? 'is-open' : ''}`}
+                data-index={index}
+                className={`pane text-start ${openPane === index || focusPane === index ? 'is-open' : ''}`}
                 onClick={() => setOpenPane(openPane === index ? null : index)}
                 aria-expanded={openPane === index}
               >
@@ -629,7 +668,7 @@ function App() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4" data-reveal>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4" data-reveal>
             {CLIENTS.map((c, i) => (
               <div key={c.name} className="client-pane group">
                 <span className="client-frost" />
@@ -900,7 +939,7 @@ function App() {
       {/* ===== Dock flottant : interrupteur + appel + WhatsApp (suit le scroll, pensé mobile) ===== */}
       <div className="dock" role="region" aria-label={t.dock.aria}>
         <div className="dock-switch">
-          <WallSwitch on={isTransparent} onToggle={() => toggleMode()} size="dock" hint={!tried ? t.dock.hint : null} />
+          <WallSwitch on={isTransparent} onToggle={() => toggleMode()} size="dock" hint={!tried && !hintGone ? t.dock.hint : null} />
           <span className="dock-label">
             <span className="dock-label-top">{t.dock.label}</span>
             <span className="dock-label-state">{isTransparent ? t.dock.on : t.dock.off}</span>

@@ -814,3 +814,6 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   .wall-switch--dock { width: 84px !important; }
   .dock-switch { gap: 8px; padding-right: 2px; }
 }
+
+/* touch: the see-through circle closes quickly once the finger lifts */
+@media (hover: none) { .smart-window { transition: --r .5s cubic-bezier(.4,0,.2,1); } }

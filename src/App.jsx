@@ -143,6 +143,14 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
     el.style.setProperty('--y', `${e.clientY - r.top}px`)
   }
 
+  // touch: the circle closes again as soon as the finger lifts (a quick tap still shows it briefly)
+  const downAt = useRef(0)
+  const closeSoon = () => {
+    clearTimeout(hideTimer.current)
+    const wait = Math.max(0, 380 - (Date.now() - downAt.current))
+    hideTimer.current = setTimeout(() => setHover(false), wait)
+  }
+
   const radius = on ? '150vmax' : hover ? 'var(--wipe)' : '0px'
   const t = useT().window
 
@@ -153,10 +161,10 @@ function SmartWindow({ on, windowRef, onSwitch, hint }) {
       style={{ '--r': radius }}
       onPointerEnter={(e) => { if (e.pointerType === 'mouse') { setPoint(e); setHover(true); setTouched(true) } }}
       onPointerMove={(e) => { if (e.pointerType === 'mouse' || hover) setPoint(e) }}
-      onPointerDown={(e) => { if (e.target.closest('button')) return; clearTimeout(hideTimer.current); setPoint(e); setHover(true); setTouched(true) }}
+      onPointerDown={(e) => { if (e.target.closest('button')) return; clearTimeout(hideTimer.current); downAt.current = Date.now(); setPoint(e); setHover(true); setTouched(true) }}
       onPointerLeave={(e) => { if (e.pointerType === 'mouse') setHover(false) }}
-      onPointerUp={(e) => { if (e.pointerType !== 'mouse') { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) } }}
-      onPointerCancel={() => { clearTimeout(hideTimer.current); hideTimer.current = setTimeout(() => setHover(false), 2200) }}
+      onPointerUp={(e) => { if (e.pointerType !== 'mouse') closeSoon() }}
+      onPointerCancel={closeSoon}
     >
       <PhotoLayer src={DEMO_IMAGES.opaque} ratio={DEMO_RATIO} alt={t.altOff} />
       <PhotoLayer src={DEMO_IMAGES.clear} ratio={DEMO_RATIO} alt={t.altOn} className="clear-layer" />
